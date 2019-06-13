@@ -1,4 +1,4 @@
-package tdam.meegos;
+package tam.meegos;
 
 import org.junit.Test;
 

@@ -1,4 +1,4 @@
-package tdam.meegos;
+package tam.meegos;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("tdam.meegos", appContext.getPackageName());
+        assertEquals("tam.meegos", appContext.getPackageName());
     }
 }
