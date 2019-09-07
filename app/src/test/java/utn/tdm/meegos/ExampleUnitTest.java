@@ -1,4 +1,4 @@
-package tam.meegos;
+package utn.tdm.meegos;
 
 import org.junit.Test;
 
