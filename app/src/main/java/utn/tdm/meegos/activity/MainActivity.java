@@ -1,32 +1,31 @@
-package utn.tdm.meegos;
+package utn.tdm.meegos.activity;
 
 import android.Manifest;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
-
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
-import android.util.Log;
-import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
+import utn.tdm.meegos.R;
+import utn.tdm.meegos.adapter.ContactListAdapter;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String[] MEEGOS_PERMISOS = {
-            Manifest.permission.READ_CONTACTS,
-            Manifest.permission.READ_SMS,
-            Manifest.permission.RECEIVE_SMS,
-            Manifest.permission.READ_PHONE_STATE,
-            Manifest.permission.READ_PHONE_NUMBERS,
-            Manifest.permission.READ_CALL_LOG
-        };
+        Manifest.permission.READ_CONTACTS,
+        Manifest.permission.READ_SMS,
+        Manifest.permission.RECEIVE_SMS,
+        Manifest.permission.READ_PHONE_STATE,
+        Manifest.permission.READ_PHONE_NUMBERS,
+        Manifest.permission.READ_CALL_LOG
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        Log.w("MainActivity: ", "Entro al onCreate");
+        Log.d("MainActivity: ", "Entro al onCreate");
 
 
 //        Cuando usamos emuladores de android no nos pide los permisos
@@ -61,6 +60,9 @@ public class MainActivity extends AppCompatActivity {
 //                        .setAction("Action", null).show();
 //            }
 //        });
+
+        final ListView contactListView = findViewById(R.id.contact_list);
+        contactListView.setAdapter(new ContactListAdapter(this));
     }
 
     @Override
@@ -84,4 +86,50 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+
+
+//Metodos del ListActivity
+    protected void onListItemClick(ListView l, View v, int position, long id) {
+        throw new RuntimeException("Stub!");
+    }
+
+    protected void onRestoreInstanceState(Bundle state) {
+        throw new RuntimeException("Stub!");
+    }
+
+    protected void onDestroy() {
+        super.onDestroy();
+        throw new RuntimeException("Stub!");
+    }
+
+    public void onContentChanged() {
+        Log.d("MainActivity","onContentChanged");
+//        throw new RuntimeException("Stub!");
+    }
+
+    public void setListAdapter(ListAdapter adapter) {
+        throw new RuntimeException("Stub!");
+    }
+
+    public void setSelection(int position) {
+        throw new RuntimeException("Stub!");
+    }
+
+    public int getSelectedItemPosition() {
+        throw new RuntimeException("Stub!");
+    }
+
+    public long getSelectedItemId() {
+        throw new RuntimeException("Stub!");
+    }
+
+    public ListView getListView() {
+        throw new RuntimeException("Stub!");
+    }
+
+    public ListAdapter getListAdapter() {
+        throw new RuntimeException("Stub!");
+    }
+
 }
