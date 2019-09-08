@@ -29,21 +29,21 @@ public class MeegosReceiver extends BroadcastReceiver {
         if (extras != null) {
             if (intent.getAction().equals("android.provider.Telephony.SMS_RECEIVED")) {
                 Log.d("MeegosReceiver: ", "SMS_RECEIVED");
-                String mensaje = "";
+                String message = "";
                 String phoneNumber = "";
-                int contactoId;
-                String contactoNombre = "";
+                int contactId;
+                String contactName = "";
 
                 String format = extras.getString("format"); //3gpp
                 Object[] msgPDU = (Object[]) extras.get("pdus");
-                final SmsMessage[] message = new SmsMessage[msgPDU.length];
+                final SmsMessage[] pduMessage = new SmsMessage[msgPDU.length];
                 for (int i = 0; i < msgPDU.length; i++) {
-                    message[i] = SmsMessage.createFromPdu((byte[])msgPDU[i], format);
-                    mensaje = message[i].getMessageBody();
-                    phoneNumber = message[i].getOriginatingAddress();
+                    pduMessage[i] = SmsMessage.createFromPdu((byte[])msgPDU[i], format);
+                    message = pduMessage[i].getMessageBody();
+                    phoneNumber = pduMessage[i].getOriginatingAddress();
                 }
 
-                // TODO: Registrar mensaje
+                // TODO: Registrar message
                 db.insertEvento(
                         1,
                         new Date().getTime(),
