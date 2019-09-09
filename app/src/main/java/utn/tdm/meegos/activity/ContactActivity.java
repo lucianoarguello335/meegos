@@ -5,18 +5,16 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.ListAdapter;
-import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 
 import utn.tdm.meegos.R;
-import utn.tdm.meegos.adapter.ContactListAdapter;
+import utn.tdm.meegos.fragment.ContactListFragment;
+import utn.tdm.meegos.fragment.dummy.DummyContent;
 
-public class MainActivity extends AppCompatActivity {
+public class ContactActivity extends AppCompatActivity implements ContactListFragment.OnListFragmentInteractionListener {
 
     private static final String[] MEEGOS_PERMISOS = {
         Manifest.permission.READ_CONTACTS,
@@ -30,10 +28,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.contact_activity);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        Log.d("MainActivity: ", "Entro al onCreate");
+        Log.d("ContactActivity: ", "Entro al onCreate");
 
 
 //        Cuando usamos emuladores de android no nos pide los permisos
@@ -61,14 +59,12 @@ public class MainActivity extends AppCompatActivity {
 //            }
 //        });
 
-        final ListView contactListView = findViewById(R.id.contact_list);
-        contactListView.setAdapter(new ContactListAdapter(this));
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.contact_menu, menu);
         return true;
     }
 
@@ -87,49 +83,8 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onListFragmentInteraction(DummyContent.DummyItem item) {
 
-
-//Metodos del ListActivity
-    protected void onListItemClick(ListView l, View v, int position, long id) {
-        throw new RuntimeException("Stub!");
     }
-
-    protected void onRestoreInstanceState(Bundle state) {
-        throw new RuntimeException("Stub!");
-    }
-
-    protected void onDestroy() {
-        super.onDestroy();
-        throw new RuntimeException("Stub!");
-    }
-
-    public void onContentChanged() {
-        Log.d("MainActivity","onContentChanged");
-//        throw new RuntimeException("Stub!");
-    }
-
-    public void setListAdapter(ListAdapter adapter) {
-        throw new RuntimeException("Stub!");
-    }
-
-    public void setSelection(int position) {
-        throw new RuntimeException("Stub!");
-    }
-
-    public int getSelectedItemPosition() {
-        throw new RuntimeException("Stub!");
-    }
-
-    public long getSelectedItemId() {
-        throw new RuntimeException("Stub!");
-    }
-
-    public ListView getListView() {
-        throw new RuntimeException("Stub!");
-    }
-
-    public ListAdapter getListAdapter() {
-        throw new RuntimeException("Stub!");
-    }
-
 }

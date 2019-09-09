@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.recyclerview.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@android:id/list"
+    android:name="utn.tdm.meegos.fragment.ContactListFragment"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginLeft="16dp"
+    android:layout_marginRight="16dp"
+    app:layoutManager="LinearLayoutManager"
+    tools:context=".fragment.ContactListFragment"
+    tools:listitem="@layout/contact_list_item_fragment" />
+
+
+<!--<ListView-->
+<!--android:id="@+id/contact_list"-->
+<!--android:layout_width="match_parent"-->
+<!--android:layout_weight="0"-->
+<!--android:layout_height="match_parent"/>-->
+<!--<TextView-->
+<!--android:id="@+id/empty"-->
+<!--android:layout_width="wrap_content"-->
+<!--android:layout_height="wrap_content"-->
+<!--android:textColor="@color/list_no_data_color"-->
+<!--android:textAlignment="center"-->
+<!--android:text="@string/list_no_data"-->
+<!--android:layout_weight="1"/>-->

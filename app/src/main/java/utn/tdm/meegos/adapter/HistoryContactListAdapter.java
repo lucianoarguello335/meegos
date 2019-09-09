@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import utn.tdm.meegos.R;
-import utn.tdm.meegos.fragment.ContactListFragment.OnListFragmentInteractionListener;
+import utn.tdm.meegos.fragment.HistoryContactListFragment.OnListFragmentInteractionListener;
 import utn.tdm.meegos.fragment.dummy.DummyContent.DummyItem;
 
 import java.util.List;
@@ -18,12 +18,12 @@ import java.util.List;
  * specified {@link OnListFragmentInteractionListener}.
  * TODO: Replace the implementation with code for your data type.
  */
-public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.ViewHolder> {
+public class HistoryContactListAdapter extends RecyclerView.Adapter<HistoryContactListAdapter.ViewHolder> {
 
     private final List<DummyItem> mValues;
     private final OnListFragmentInteractionListener mListener;
 
-    public ContactListAdapter(List<DummyItem> items, OnListFragmentInteractionListener listener) {
+    public HistoryContactListAdapter(List<DummyItem> items, OnListFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
     }
@@ -31,7 +31,7 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.contact_list_item_fragment, parent, false);
+                .inflate(R.layout.history_contact_list_item_fragment, parent, false);
         return new ViewHolder(view);
     }
 
