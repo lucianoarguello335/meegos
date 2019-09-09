@@ -3,18 +3,15 @@ package utn.tdm.meegos.receiver;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.telephony.SmsMessage;
-import android.telephony.TelephonyManager;
 import android.util.Log;
 
-import java.time.Instant;
 import java.util.Date;
 
 import utn.tdm.meegos.database.EventsSQLiteHelper;
 
-public class MeegosReceiver extends BroadcastReceiver {
+public class SMSReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -28,7 +25,7 @@ public class MeegosReceiver extends BroadcastReceiver {
         Bundle extras = intent.getExtras();
         if (extras != null) {
             if (intent.getAction().equals("android.provider.Telephony.SMS_RECEIVED")) {
-                Log.d("MeegosReceiver: ", "SMS_RECEIVED");
+                Log.d("SMSReceiver: ", "SMS_RECEIVED");
                 String message = "";
                 String phoneNumber = "";
                 int contactId;
@@ -38,7 +35,7 @@ public class MeegosReceiver extends BroadcastReceiver {
                 Object[] msgPDU = (Object[]) extras.get("pdus");
                 final SmsMessage[] pduMessage = new SmsMessage[msgPDU.length];
                 for (int i = 0; i < msgPDU.length; i++) {
-                    pduMessage[i] = SmsMessage.createFromPdu((byte[])msgPDU[i], format);
+                    pduMessage[i] = SmsMessage.createFromPdu((byte[]) msgPDU[i], format);
                     message = pduMessage[i].getMessageBody();
                     phoneNumber = pduMessage[i].getOriginatingAddress();
                 }
@@ -52,18 +49,6 @@ public class MeegosReceiver extends BroadcastReceiver {
                         1,
                         ""
                 );
-            } else if (false) {
-
-            } else if (intent.getAction().equals("android.intent.action.PHONE_STATE")) {
-                Log.d("MeegosReceiver: ", "PHONE_STATE");
-                if (extras.getString(TelephonyManager.EXTRA_STATE)
-                        .equals(TelephonyManager.EXTRA_STATE_RINGING)) {
-
-                    String phoneNumber = extras.getString(TelephonyManager.EXTRA_INCOMING_NUMBER);
-                    if (phoneNumber != null) {
-                        // TODO: Registrar llamado
-                    }
-                }
             }
         }
     }
