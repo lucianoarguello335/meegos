@@ -1,6 +1,7 @@
 package utn.tdm.meegos.activity;
 
 import android.Manifest;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -9,14 +10,16 @@ import android.view.MenuItem;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import utn.tdm.meegos.R;
+import utn.tdm.meegos.domain.Contacto;
 import utn.tdm.meegos.fragment.ContactListFragment;
 import utn.tdm.meegos.fragment.dummy.DummyContent;
 
 public class ContactActivity extends AppCompatActivity implements ContactListFragment.OnListFragmentInteractionListener {
 
-    private static final String[] MEEGOS_PERMISOS = {
+    public static final String[] MEEGOS_PERMISOS = {
         Manifest.permission.READ_CONTACTS,
         Manifest.permission.READ_SMS,
         Manifest.permission.RECEIVE_SMS,
@@ -31,12 +34,9 @@ public class ContactActivity extends AppCompatActivity implements ContactListFra
         setContentView(R.layout.contact_activity);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        Log.d("ContactActivity: ", "Entro al onCreate");
-
 
 //        Cuando usamos emuladores de android no nos pide los permisos
 //        Por eso si no los tiene los pedimos en tiempo de ejecucion
-        ActivityCompat.requestPermissions(this, MEEGOS_PERMISOS, 0);
 //        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_SMS) != PackageManager.PERMISSION_GRANTED
 //                || ContextCompat.checkSelfPermission(this, Manifest.permission.RECEIVE_SMS) != PackageManager.PERMISSION_GRANTED
 //                || ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
@@ -61,6 +61,8 @@ public class ContactActivity extends AppCompatActivity implements ContactListFra
 
     }
 
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -84,7 +86,15 @@ public class ContactActivity extends AppCompatActivity implements ContactListFra
     }
 
     @Override
-    public void onListFragmentInteraction(DummyContent.DummyItem item) {
+    public void onListFragmentInteraction(Contacto contacto) {
 
+    }
+
+    private boolean userHasAllPermission(){
+        for (int i = 0; i < MEEGOS_PERMISOS.length; i++) {
+            if(ContextCompat.checkSelfPermission(this, MEEGOS_PERMISOS[i]) == PackageManager.PERMISSION_DENIED)
+                return false;
+        }
+        return true;
     }
 }

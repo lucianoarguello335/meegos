@@ -1,8 +1,10 @@
 package utn.tdm.meegos.fragment;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.os.Bundle;
 
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -13,9 +15,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import utn.tdm.meegos.R;
+import utn.tdm.meegos.activity.ContactActivity;
 import utn.tdm.meegos.adapter.ContactListAdapter;
+import utn.tdm.meegos.domain.Contacto;
 import utn.tdm.meegos.fragment.dummy.DummyContent;
 import utn.tdm.meegos.fragment.dummy.DummyContent.DummyItem;
+import utn.tdm.meegos.service.ContactService;
 
 /**
  * A fragment representing a list of Items.
@@ -30,6 +35,8 @@ public class ContactListFragment extends Fragment {
     // TODO: Customize parameters
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
+
+    private ContactService contactService;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -51,6 +58,7 @@ public class ContactListFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ActivityCompat.requestPermissions(getActivity(), ContactActivity.MEEGOS_PERMISOS, 0);
 
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
@@ -71,7 +79,8 @@ public class ContactListFragment extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new ContactListAdapter(DummyContent.ITEMS, mListener));
+            contactService = new ContactService(getContext());
+            recyclerView.setAdapter(new ContactListAdapter(getContext(), contactService.findAllContacts(), mListener));
         }
         return view;
     }
@@ -105,6 +114,6 @@ public class ContactListFragment extends Fragment {
      */
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onListFragmentInteraction(DummyItem item);
+        void onListFragmentInteraction(Contacto contacto);
     }
 }
