@@ -1,4 +1,10 @@
 <resources>
     <string name="app_name">Meegos</string>
     <string name="action_settings">Settings</string>
+
+    <!--    List options-->
+    <string name="list_no_data">No data found</string>
+
+
+    <string name="title_activity_history_contact_list">Contact History</string>
 </resources>
