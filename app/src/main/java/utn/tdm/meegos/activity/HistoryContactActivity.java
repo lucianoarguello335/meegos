@@ -9,9 +9,10 @@ import android.view.Menu;
 
 import utn.tdm.meegos.R;
 import utn.tdm.meegos.fragment.ContactListFragment;
+import utn.tdm.meegos.fragment.HistoryContactListFragment;
 import utn.tdm.meegos.fragment.dummy.DummyContent;
 
-public class HistoryContactActivity extends AppCompatActivity implements ContactListFragment.OnListFragmentInteractionListener {
+public class HistoryContactActivity extends AppCompatActivity implements HistoryContactListFragment.OnListFragmentInteractionListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
