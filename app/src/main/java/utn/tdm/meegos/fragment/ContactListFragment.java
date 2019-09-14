@@ -1,25 +1,25 @@
 package utn.tdm.meegos.fragment;
 
-import android.content.ContentResolver;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
 import utn.tdm.meegos.R;
 import utn.tdm.meegos.activity.ContactActivity;
 import utn.tdm.meegos.adapter.ContactListAdapter;
 import utn.tdm.meegos.domain.Contacto;
-import utn.tdm.meegos.fragment.dummy.DummyContent;
-import utn.tdm.meegos.fragment.dummy.DummyContent.DummyItem;
 import utn.tdm.meegos.service.ContactService;
 
 /**
@@ -36,6 +36,7 @@ public class ContactListFragment extends Fragment {
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
 
+    private RecyclerView recyclerView;
     private ContactService contactService;
 
     /**
@@ -58,7 +59,6 @@ public class ContactListFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ActivityCompat.requestPermissions(getActivity(), ContactActivity.MEEGOS_PERMISOS, 0);
 
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
@@ -66,23 +66,25 @@ public class ContactListFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.contact_list_fragment, container, false);
 
         // Set the adapter
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
+            recyclerView = (RecyclerView) view;
             if (mColumnCount <= 1) {
                 recyclerView.setLayoutManager(new LinearLayoutManager(context));
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
             contactService = new ContactService(getContext());
-            recyclerView.setAdapter(new ContactListAdapter(getContext(), contactService.findAllContacts(), mListener));
         }
         return view;
+    }
+
+    public void onPermissionsAccepted() {
+        recyclerView.setAdapter(new ContactListAdapter(getContext(), contactService.findAllContacts(), mListener));
     }
 
     @Override

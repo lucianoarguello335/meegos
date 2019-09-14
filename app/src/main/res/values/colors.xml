@@ -9,4 +9,6 @@
 
 <!--    List colors-->
     <color name="list_no_data_color">#FF0000</color>
+    <color name="list_tipo_evento">#607D8B</color>
+    <color name="list_delete">#FFAB91</color>
 </resources>

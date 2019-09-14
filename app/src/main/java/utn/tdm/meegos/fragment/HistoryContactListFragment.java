@@ -2,20 +2,24 @@ package utn.tdm.meegos.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import java.util.ArrayList;
 
 import utn.tdm.meegos.R;
 import utn.tdm.meegos.adapter.HistoryContactListAdapter;
-import utn.tdm.meegos.fragment.dummy.DummyContent;
+import utn.tdm.meegos.domain.Evento;
 import utn.tdm.meegos.fragment.dummy.DummyContent.DummyItem;
+import utn.tdm.meegos.listener.OnListEventListener;
+import utn.tdm.meegos.service.EventoService;
 
 /**
  * A fragment representing a list of Items.
@@ -23,13 +27,17 @@ import utn.tdm.meegos.fragment.dummy.DummyContent.DummyItem;
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
  */
-public class HistoryContactListFragment extends Fragment {
+public class HistoryContactListFragment extends Fragment implements OnListEventListener {
 
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
     // TODO: Customize parameters
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
+    private OnListEventListener onListEventListener;
+
+    private EventoService eventoService;
+    private HistoryContactListAdapter historyContactListAdapter;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -58,24 +66,51 @@ public class HistoryContactListFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.history_contact_list_fragment, container, false);
 
         // Set the adapter
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
+            final RecyclerView recyclerView = (RecyclerView) view;
             if (mColumnCount <= 1) {
                 recyclerView.setLayoutManager(new LinearLayoutManager(context));
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new HistoryContactListAdapter(DummyContent.ITEMS, mListener));
+            eventoService = new EventoService(getContext());
+            Bundle bundle = getActivity().getIntent().getExtras();
+
+            historyContactListAdapter = new HistoryContactListAdapter(
+                    eventoService.findEventosByContact(
+                            bundle.getLong("contact_id"),
+                            bundle.getString("contact_lookup"),
+                            bundle.getString("contact_nombre")
+                    ),
+                    new OnListEventListener() {
+                        @Override
+                        public void onDeleteEvent(Evento evento) {
+                            // TODO: Hacer un DialogFragment para confirmar operacin
+                            int result = eventoService.deleteEvento(evento);
+                            Toast.makeText(
+                                    getContext(),
+                                    "Result: " + result,
+                                    Toast.LENGTH_SHORT
+                            ).show();
+                            historyContactListAdapter.setEventos(eventoService.findEventosByContact(
+                                    evento.getContactoId(),
+                                    evento.getContactoLookup(),
+                                    evento.getContactoNombre()
+                            ));
+                            historyContactListAdapter.notifyDataSetChanged();
+                        }
+                    }
+            );
+
+            recyclerView.setAdapter(historyContactListAdapter);
         }
         return view;
     }
-
 
     @Override
     public void onAttach(Context context) {
@@ -94,6 +129,11 @@ public class HistoryContactListFragment extends Fragment {
         mListener = null;
     }
 
+    @Override
+    public void onDeleteEvent(Evento evento) {
+
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -106,6 +146,6 @@ public class HistoryContactListFragment extends Fragment {
      */
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onListFragmentInteraction(DummyItem item);
+        void onListFragmentInteraction(Evento evento);
     }
 }

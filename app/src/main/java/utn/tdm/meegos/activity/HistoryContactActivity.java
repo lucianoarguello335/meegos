@@ -6,8 +6,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.view.Menu;
+import android.widget.Toast;
 
 import utn.tdm.meegos.R;
+import utn.tdm.meegos.domain.Evento;
 import utn.tdm.meegos.fragment.ContactListFragment;
 import utn.tdm.meegos.fragment.HistoryContactListFragment;
 import utn.tdm.meegos.fragment.dummy.DummyContent;
@@ -48,11 +50,10 @@ public class HistoryContactActivity extends AppCompatActivity implements History
     }
 
 
-//metodo de fragment
-
+//Listener del fragment
 
     @Override
-    public void onListFragmentInteraction(DummyContent.DummyItem item) {
-
+    public void onListFragmentInteraction(Evento evento) {
+        Toast.makeText(this, "onListFragmentInteraction Se elimino el evento " + evento.getId(), Toast.LENGTH_SHORT).show();
     }
 }

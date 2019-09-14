@@ -10,12 +10,17 @@ import android.util.Log;
 import java.util.Date;
 
 import utn.tdm.meegos.database.EventsSQLiteHelper;
+import utn.tdm.meegos.domain.Contacto;
+import utn.tdm.meegos.domain.Evento;
+import utn.tdm.meegos.service.ContactService;
 
 public class SMSReceiver extends BroadcastReceiver {
 
+    ContactService contactService;
+
     @Override
     public void onReceive(Context context, Intent intent) {
-
+        contactService = new ContactService(context);
         EventsSQLiteHelper db = new EventsSQLiteHelper(
                 context,
                 EventsSQLiteHelper.DB_NAME,
@@ -40,15 +45,20 @@ public class SMSReceiver extends BroadcastReceiver {
                     phoneNumber = pduMessage[i].getOriginatingAddress();
                 }
 
-                // TODO: Registrar message
-                db.insertEvento(
-                        1,
-                        new Date().getTime(),
-                        1212,
-                        "pepe",
-                        1,
-                        ""
-                );
+                Contacto contacto = contactService.findContactByPhoneNumbre(phoneNumber);
+
+                if(contacto != null){
+                    db.insertEvento(
+                            Evento.SMS,
+                            new Date().getTime(),
+                            contacto.getId(),
+                            contacto.getLookupKey(),
+                            contacto.getNombre(),
+                            phoneNumber,
+                            Evento.ENTRANTE,
+                            message
+                    );
+                }
             }
         }
     }

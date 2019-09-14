@@ -2,6 +2,7 @@
     <string name="app_name">Meegos</string>
     <string name="action_settings">Settings</string>
 
+    <string name="permission_denied">Must allow all permission to use the app.</string>
     <!--    List options-->
     <string name="list_no_data">No data found</string>
 

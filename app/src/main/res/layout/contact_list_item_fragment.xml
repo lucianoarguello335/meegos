@@ -8,9 +8,8 @@
 
     <QuickContactBadge
         android:id="@+id/quickbadge"
-        android:layout_gravity="left"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_width="63dp"
+        android:layout_height="match_parent" />
 
     <!--    <TextView-->
     <!--        android:id="@+id/position"-->
@@ -20,17 +19,16 @@
 
     <TextView
         android:id="@+id/contactName"
-        android:layout_gravity="center|center_horizontal|center_vertical"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+        android:layout_margin="@dimen/text_margin"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"/>
 
     <ImageButton
         android:id="@+id/contactHistoryButton"
-        android:layout_gravity="right"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="63dp"
+        android:layout_height="match_parent"
         android:background="@color/colorSecondary"
-        android:src="@drawable/baseline_restore_black_24" />
+        android:src="@drawable/baseline_restore_black_48" />
 
 </LinearLayout>
