@@ -7,9 +7,16 @@ import android.os.Bundle;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
+import java.util.Date;
+
 import utn.tdm.meegos.database.EventsSQLiteHelper;
+import utn.tdm.meegos.domain.Contacto;
+import utn.tdm.meegos.domain.Evento;
+import utn.tdm.meegos.service.ContactService;
 
 public class PhoneReceiver extends BroadcastReceiver {
+
+    ContactService contactService;
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -24,12 +31,22 @@ public class PhoneReceiver extends BroadcastReceiver {
         if (extras != null) {
             if (intent.getAction().equals("android.intent.action.PHONE_STATE")) {
                 Log.d("PhoneReceiver: ", "PHONE_STATE");
-                if (extras.getString(TelephonyManager.EXTRA_STATE)
-                        .equals(TelephonyManager.EXTRA_STATE_RINGING)) {
-
+                if (extras.getString(TelephonyManager.EXTRA_STATE).equals(TelephonyManager.EXTRA_STATE_RINGING)) {
                     String phoneNumber = extras.getString(TelephonyManager.EXTRA_INCOMING_NUMBER);
                     if (phoneNumber != null) {
-                        // TODO: Registrar llamado
+                        Contacto contacto = contactService.findContactByPhoneNumbre(phoneNumber);
+                        if(contacto != null){
+                            db.insertEvento(
+                                    Evento.LLAMADA,
+                                    new Date().getTime(),
+                                    contacto.getId(),
+                                    contacto.getLookupKey(),
+                                    contacto.getNombre(),
+                                    phoneNumber,
+                                    Evento.ENTRANTE,
+                                    ""
+                            );
+                        }
                     }
                 }
             }

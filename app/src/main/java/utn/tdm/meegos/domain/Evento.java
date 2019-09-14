@@ -1,14 +1,18 @@
 package utn.tdm.meegos.domain;
 
-import utn.tdm.meegos.domain.enumeration.OrigenEvento;
-import utn.tdm.meegos.domain.enumeration.TipoEvento;
-
 public class Evento {
+
+    public static final int LLAMADA = 1;
+    public static final int SMS = 2;
+    public static final int CHAT = 3;
+
+    public static final int ENTRANTE = 1;
+    public static final int SALIENTE = 2;
 
     /**
      * ID con el que se identifica al evento.
      */
-    private int id;
+    private long id;
 
     /**
      * Los tipos de eventos son:
@@ -18,7 +22,7 @@ public class Evento {
      *     <li>Chat</li>
      * </ol>
      */
-    private TipoEvento tipo;
+    private int tipo;
 
     /**
      * La fecha se representa en milisegundos.
@@ -28,12 +32,22 @@ public class Evento {
     /**
      * Id del contacto. _ID
      */
-    private int contactoId;
+    private long contactoId;
+
+    /**
+     * Lookup key del contacto. LOOKUP_KEY
+     */
+    private String contactoLookup;
 
     /**
      * Nombre completo del contacto para mostar en la lista.
      */
     private String contactoNombre;
+
+    /**
+     * Numero con el cual el contacto realizo el evento.
+     */
+    private String contactoNumero;
 
     /**
      * Los origenes son:
@@ -42,38 +56,41 @@ public class Evento {
      *     <li>Saliente</li>
      * </ol>
      */
-    private OrigenEvento origen;
+    private int origen;
 
     /**
      * Contenido del mensaje WEB. Chat.
      */
     private String smsWeb;
 
-    public Evento(int id, TipoEvento tipo, long fecha, int contactoId, String contactoNombre, OrigenEvento origen, String smsWeb) {
+    public Evento(long id, int tipo, long fecha, long contactoId, String contactoLookup,
+                  String contactoNombre, String contactoNumero, int origen, String smsWeb) {
         this.id = id;
         this.tipo = tipo;
         this.fecha = fecha;
         this.contactoId = contactoId;
+        this.contactoLookup = contactoLookup;
         this.contactoNombre = contactoNombre;
+        this.contactoNumero = contactoNumero;
         this.origen = origen;
         this.smsWeb = smsWeb;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
-    public TipoEvento getTipo() {
-        return tipo;
-    }
+    public String getContactoLookup() { return contactoLookup; }
 
-    public void setTipo(TipoEvento tipo) {
-        this.tipo = tipo;
-    }
+    public void setContactoLookup(String contactoLookup) { this.contactoLookup = contactoLookup; }
+
+    public int getTipo() { return tipo; }
+
+    public void setTipo(int tipo) { this.tipo = tipo; }
 
     public long getFecha() {
         return fecha;
@@ -83,11 +100,11 @@ public class Evento {
         this.fecha = fecha;
     }
 
-    public int getContactoId() {
+    public long getContactoId() {
         return contactoId;
     }
 
-    public void setContactoId(int contactoId) {
+    public void setContactoId(long contactoId) {
         this.contactoId = contactoId;
     }
 
@@ -99,13 +116,13 @@ public class Evento {
         this.contactoNombre = contactoNombre;
     }
 
-    public OrigenEvento getOrigen() {
-        return origen;
-    }
+    public String getContactoNumero() { return contactoNumero; }
 
-    public void setOrigen(OrigenEvento origen) {
-        this.origen = origen;
-    }
+    public void setContactoNumero(String contactoNumero) { this.contactoNumero = contactoNumero; }
+
+    public int getOrigen() { return origen; }
+
+    public void setOrigen(int origen) { this.origen = origen; }
 
     public String getSmsWeb() {
         return smsWeb;

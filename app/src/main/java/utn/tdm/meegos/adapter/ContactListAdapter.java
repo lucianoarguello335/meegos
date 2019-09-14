@@ -1,36 +1,22 @@
 package utn.tdm.meegos.adapter;
 
 import android.content.Context;
-import android.content.res.AssetFileDescriptor;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.ColorFilter;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.Icon;
-import android.net.Uri;
-import android.os.Build;
-import android.os.ParcelFileDescriptor;
+import android.content.Intent;
+import android.os.Bundle;
 import android.provider.ContactsContract;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.QuickContactBadge;
 import android.widget.TextView;
 
-import androidx.annotation.DrawableRes;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.io.FileDescriptor;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
 
 import utn.tdm.meegos.R;
+import utn.tdm.meegos.activity.HistoryContactActivity;
 import utn.tdm.meegos.domain.Contacto;
 import utn.tdm.meegos.fragment.ContactListFragment.OnListFragmentInteractionListener;
 import utn.tdm.meegos.fragment.dummy.DummyContent.DummyItem;
@@ -40,7 +26,7 @@ import utn.tdm.meegos.fragment.dummy.DummyContent.DummyItem;
  * specified {@link OnListFragmentInteractionListener}.
  * TODO: Replace the implementation with code for your data type.
  */
-public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.ContactoHolder> {
+public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.ContactHolder> {
 
     //    private final List<DummyItem> mValues;
     private final ArrayList<Contacto> contactos;
@@ -57,15 +43,15 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
     }
 
     @Override
-    public ContactoHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ContactHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.contact_list_item_fragment, parent, false);
-        return new ContactoHolder(view);
+        return new ContactHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(final ContactoHolder holder, int position) {
-        Contacto contacto = contactos.get(position);
+    public void onBindViewHolder(final ContactHolder holder, int position) {
+        final Contacto contacto = contactos.get(position);
 
         holder.mBadge.assignContactUri(ContactsContract.Contacts.getLookupUri(
                 contacto.getId(),
@@ -83,6 +69,21 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
 //        holder.mPosition.setText(String.valueOf(position));
         holder.mContentView.setText(contacto.getNombre());
 
+        holder.historyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent =new Intent(view.getContext(), HistoryContactActivity.class);
+
+                Bundle bundle = new Bundle();
+                bundle.putLong("contact_id", contacto.getId());
+                bundle.putString("contact_lookup", contacto.getLookupKey());
+                bundle.putString("contact_nombre", contacto.getNombre());
+
+                intent.putExtras(bundle);
+                view.getContext().startActivity(intent);
+            }
+        });
+
 //        holder.mView.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
@@ -95,18 +96,20 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
 //        });
     }
 
-    public class ContactoHolder extends RecyclerView.ViewHolder {
+    public class ContactHolder extends RecyclerView.ViewHolder {
         public final View mView;
         public final QuickContactBadge mBadge;
 //        public final TextView mPosition;
         public final TextView mContentView;
+        public final ImageButton historyButton;
 
-        public ContactoHolder(View view) {
+        public ContactHolder(View view) {
             super(view);
             mView = view;
             mBadge = (QuickContactBadge) view.findViewById(R.id.quickbadge);
 //            mPosition = (TextView) view.findViewById(R.id.position);
             mContentView = (TextView) view.findViewById(R.id.contactName);
+            historyButton = (ImageButton) view.findViewById(R.id.contactHistoryButton);
         }
 
         @Override

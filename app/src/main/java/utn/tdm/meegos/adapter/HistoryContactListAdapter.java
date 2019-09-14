@@ -1,17 +1,23 @@
 package utn.tdm.meegos.adapter;
 
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.Calendar;
+import java.util.List;
 
 import utn.tdm.meegos.R;
+import utn.tdm.meegos.domain.Evento;
 import utn.tdm.meegos.fragment.HistoryContactListFragment.OnListFragmentInteractionListener;
 import utn.tdm.meegos.fragment.dummy.DummyContent.DummyItem;
-
-import java.util.List;
+import utn.tdm.meegos.listener.OnListEventListener;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link DummyItem} and makes a call to the
@@ -20,12 +26,19 @@ import java.util.List;
  */
 public class HistoryContactListAdapter extends RecyclerView.Adapter<HistoryContactListAdapter.ViewHolder> {
 
-    private final List<DummyItem> mValues;
+//    private final List<DummyItem> mValues;
+    private List<Evento> eventos;
     private final OnListFragmentInteractionListener mListener;
+    private final OnListEventListener onListEventListener;
 
-    public HistoryContactListAdapter(List<DummyItem> items, OnListFragmentInteractionListener listener) {
-        mValues = items;
-        mListener = listener;
+    public HistoryContactListAdapter(List<Evento> eventos, OnListEventListener onListEventListener) {
+        this.eventos = eventos;
+        this.mListener = null;
+        this.onListEventListener = onListEventListener;
+    }
+
+    public void setEventos(List<Evento> eventos) {
+        this.eventos = eventos;
     }
 
     @Override
@@ -36,18 +49,50 @@ public class HistoryContactListAdapter extends RecyclerView.Adapter<HistoryConta
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
-        holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).id);
-        holder.mContentView.setText(mValues.get(position).content);
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
+        final Evento evento = eventos.get(position);
 
-        holder.mView.setOnClickListener(new View.OnClickListener() {
+        if (evento.getTipo() == 1) {
+            holder.tipoEventoImageView.setImageResource(R.drawable.baseline_call_black_48);
+        } else {
+            holder.tipoEventoImageView.setImageResource(R.drawable.baseline_sms_black_48);
+        }
+        holder.tipoEventoImageView.setColorFilter(holder.view.getResources().getColor(R.color.list_tipo_evento,null));
+
+        if (evento.getOrigen() == 1) {
+            holder.origenImageView.setImageResource(R.drawable.baseline_call_received_black_48);
+            holder.origenImageView.setColorFilter(holder.view.getResources().getColor(R.color.colorPrimaryDark,null));
+        } else {
+            holder.origenImageView.setImageResource(R.drawable.baseline_call_made_black_48);
+            holder.origenImageView.setColorFilter(holder.view.getResources().getColor(R.color.colorAccent,null));
+        }
+
+        Calendar fecha = Calendar.getInstance();
+        fecha.setTimeInMillis(evento.getFecha());
+
+        holder.fechaTextView.setText(
+                ((fecha.get(Calendar.DAY_OF_MONTH) < 10) ? ("0"+fecha.get(Calendar.DAY_OF_MONTH)) : (fecha.get(Calendar.DAY_OF_MONTH)))
+                + "/" +
+                ((fecha.get(Calendar.MONTH) < 10) ? ("0"+fecha.get(Calendar.MONTH)) : (fecha.get(Calendar.MONTH)))
+                + "/" +
+                fecha.get(Calendar.YEAR)
+                + " " +
+                ((fecha.get(Calendar.HOUR_OF_DAY) < 10) ? ("0"+fecha.get(Calendar.HOUR_OF_DAY)) : (fecha.get(Calendar.HOUR_OF_DAY)))
+                + ":" +
+                ((fecha.get(Calendar.MINUTE) < 10) ? ("0"+fecha.get(Calendar.MINUTE)) : (fecha.get(Calendar.MINUTE)))
+                + ":" +
+                ((fecha.get(Calendar.SECOND) < 10) ? ("0"+fecha.get(Calendar.SECOND)) : (fecha.get(Calendar.SECOND)))
+        );
+
+        holder.deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                onListEventListener.onDeleteEvent(evento);
+
                 if (null != mListener) {
                     // Notify the active callbacks interface (the activity, if the
                     // fragment is attached to one) that an item has been selected.
-                    mListener.onListFragmentInteraction(holder.mItem);
+//                    mListener.onListFragmentInteraction(holder.mItem);
                 }
             }
         });
@@ -55,20 +100,25 @@ public class HistoryContactListAdapter extends RecyclerView.Adapter<HistoryConta
 
     @Override
     public int getItemCount() {
-        return mValues.size();
+        return eventos.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        public final View mView;
-        public final TextView mIdView;
+        public final View view;
+        public final ImageView tipoEventoImageView;
+        public final ImageView origenImageView;
+        public final TextView fechaTextView;
         public final TextView mContentView;
-        public DummyItem mItem;
+        public final ImageButton deleteButton;
 
         public ViewHolder(View view) {
             super(view);
-            mView = view;
-            mIdView = (TextView) view.findViewById(R.id.item_number);
+            this.view = view;
+            tipoEventoImageView = (ImageView) view.findViewById(R.id.tipoEvento);
+            origenImageView = (ImageView) view.findViewById(R.id.origen);
+            fechaTextView = (TextView) view.findViewById(R.id.fecha);
             mContentView = (TextView) view.findViewById(R.id.content);
+            deleteButton = (ImageButton) view.findViewById(R.id.history_contact_list_deleteButton);
         }
 
         @Override

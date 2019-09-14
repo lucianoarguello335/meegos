@@ -3,19 +3,21 @@ package utn.tdm.meegos.activity;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
 
 import utn.tdm.meegos.R;
 import utn.tdm.meegos.domain.Contacto;
 import utn.tdm.meegos.fragment.ContactListFragment;
-import utn.tdm.meegos.fragment.dummy.DummyContent;
 
 public class ContactActivity extends AppCompatActivity implements ContactListFragment.OnListFragmentInteractionListener {
 
@@ -25,8 +27,28 @@ public class ContactActivity extends AppCompatActivity implements ContactListFra
         Manifest.permission.RECEIVE_SMS,
         Manifest.permission.READ_PHONE_STATE,
         Manifest.permission.READ_PHONE_NUMBERS,
-        Manifest.permission.READ_CALL_LOG
+        Manifest.permission.READ_CALL_LOG,
+        Manifest.permission.WRITE_CALL_LOG
     };
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == 1) {
+            boolean allPermission = true;
+            for (int i=0; i < permissions.length; i++) {
+                if(ContextCompat.checkSelfPermission(this, permissions[i]) == PackageManager.PERMISSION_DENIED){
+                    allPermission = false;
+                }
+            }
+            if (allPermission) {
+                ContactListFragment contactListFragment = (ContactListFragment) getSupportFragmentManager().getFragments().get(0);
+                contactListFragment.onPermissionsAccepted();
+            } else {
+                ActivityCompat.requestPermissions(this, ContactActivity.MEEGOS_PERMISOS, 1);
+                Toast.makeText(this, R.string.permission_denied, Toast.LENGTH_LONG).show();
+            }
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +56,8 @@ public class ContactActivity extends AppCompatActivity implements ContactListFra
         setContentView(R.layout.contact_activity);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        ActivityCompat.requestPermissions(this, ContactActivity.MEEGOS_PERMISOS, 1);
+
 
 //        Cuando usamos emuladores de android no nos pide los permisos
 //        Por eso si no los tiene los pedimos en tiempo de ejecucion
@@ -58,10 +82,7 @@ public class ContactActivity extends AppCompatActivity implements ContactListFra
 //                        .setAction("Action", null).show();
 //            }
 //        });
-
     }
-
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -88,13 +109,5 @@ public class ContactActivity extends AppCompatActivity implements ContactListFra
     @Override
     public void onListFragmentInteraction(Contacto contacto) {
 
-    }
-
-    private boolean userHasAllPermission(){
-        for (int i = 0; i < MEEGOS_PERMISOS.length; i++) {
-            if(ContextCompat.checkSelfPermission(this, MEEGOS_PERMISOS[i]) == PackageManager.PERMISSION_DENIED)
-                return false;
-        }
-        return true;
     }
 }
