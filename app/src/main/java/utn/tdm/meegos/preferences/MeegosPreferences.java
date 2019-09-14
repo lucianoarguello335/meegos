@@ -83,4 +83,14 @@ public class MeegosPreferences {
         editor.putString("web_msg_order", value);
         editor.commit();
     }
+
+    public static String getNetworkStatusChange(Context context) {
+        return getPrefs(context).getString("current_network_status", "-1");
+    }
+
+    public static void setNetworkStatusChange(Context context, String value) {
+        SharedPreferences.Editor editor = getPrefs(context).edit();
+        editor.putString("current_network_status", value);
+        editor.commit();
+    }
 }
