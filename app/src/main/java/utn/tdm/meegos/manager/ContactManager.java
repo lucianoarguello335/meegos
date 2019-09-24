@@ -1,4 +1,4 @@
-package utn.tdm.meegos.service;
+package utn.tdm.meegos.manager;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -16,12 +16,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import utn.tdm.meegos.domain.Contacto;
-import utn.tdm.meegos.preferences.MeegosPreferences;
 
-public class ContactService {
+public class ContactManager {
     private final Context context;
 
-    public ContactService(Context context) {
+    public ContactManager(Context context) {
         this.context = context;
     }
 

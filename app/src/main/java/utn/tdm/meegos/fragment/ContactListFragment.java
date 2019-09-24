@@ -1,26 +1,20 @@
 package utn.tdm.meegos.fragment;
 
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import utn.tdm.meegos.R;
-import utn.tdm.meegos.activity.ContactActivity;
 import utn.tdm.meegos.adapter.ContactListAdapter;
 import utn.tdm.meegos.domain.Contacto;
-import utn.tdm.meegos.service.ContactService;
+import utn.tdm.meegos.manager.ContactManager;
 
 /**
  * A fragment representing a list of Items.
@@ -37,7 +31,7 @@ public class ContactListFragment extends Fragment {
     private OnListFragmentInteractionListener mListener;
 
     private RecyclerView recyclerView;
-    private ContactService contactService;
+    private ContactManager contactManager;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -78,13 +72,13 @@ public class ContactListFragment extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            contactService = new ContactService(getContext());
+            contactManager = new ContactManager(getContext());
         }
         return view;
     }
 
     public void onPermissionsAccepted() {
-        recyclerView.setAdapter(new ContactListAdapter(getContext(), contactService.findAllContacts(), mListener));
+        recyclerView.setAdapter(new ContactListAdapter(getContext(), contactManager.findAllContacts(), mListener));
     }
 
     @Override

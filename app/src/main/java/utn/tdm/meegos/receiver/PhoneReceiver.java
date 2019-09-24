@@ -12,11 +12,11 @@ import java.util.Date;
 import utn.tdm.meegos.database.EventsSQLiteHelper;
 import utn.tdm.meegos.domain.Contacto;
 import utn.tdm.meegos.domain.Evento;
-import utn.tdm.meegos.service.ContactService;
+import utn.tdm.meegos.manager.ContactManager;
 
 public class PhoneReceiver extends BroadcastReceiver {
 
-    ContactService contactService;
+    ContactManager contactManager;
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -34,7 +34,7 @@ public class PhoneReceiver extends BroadcastReceiver {
                 if (extras.getString(TelephonyManager.EXTRA_STATE).equals(TelephonyManager.EXTRA_STATE_RINGING)) {
                     String phoneNumber = extras.getString(TelephonyManager.EXTRA_INCOMING_NUMBER);
                     if (phoneNumber != null) {
-                        Contacto contacto = contactService.findContactByPhoneNumbre(phoneNumber);
+                        Contacto contacto = contactManager.findContactByPhoneNumbre(phoneNumber);
                         if(contacto != null){
                             db.insertEvento(
                                     Evento.LLAMADA,

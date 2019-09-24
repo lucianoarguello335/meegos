@@ -1,4 +1,4 @@
-package utn.tdm.meegos.service;
+package utn.tdm.meegos.manager;
 
 import android.annotation.SuppressLint;
 import android.content.ContentResolver;
@@ -13,16 +13,16 @@ import utn.tdm.meegos.database.EventsSQLiteHelper;
 import utn.tdm.meegos.domain.Contacto;
 import utn.tdm.meegos.domain.Evento;
 
-public class EventoService {
+public class EventoManager {
 
     private final Context context;
     EventsSQLiteHelper eventsSQLiteHelper;
-    ContactService contactService;
+    ContactManager contactManager;
 
-    public EventoService(Context context) {
+    public EventoManager(Context context) {
         this.context = context;
         this.eventsSQLiteHelper = new EventsSQLiteHelper(context, EventsSQLiteHelper.DB_NAME, null, EventsSQLiteHelper.CURRENT_DB_VERSION);
-        this.contactService = new ContactService(context);
+        this.contactManager = new ContactManager(context);
     }
 
     public ArrayList<Evento> findAllOutgoingCall(String contactoNombre) {
@@ -41,7 +41,7 @@ public class EventoService {
 
         while (cursor.moveToNext()) {
             String phone_numbre = cursor.getString(cursor.getColumnIndex(CallLog.Calls.NUMBER));
-            Contacto contacto = contactService.findContactByPhoneNumbre(phone_numbre);
+            Contacto contacto = contactManager.findContactByPhoneNumbre(phone_numbre);
             if (contacto != null) {
                 eventos.add(
                     new Evento(
@@ -76,7 +76,7 @@ public class EventoService {
 
         while (cursor.moveToNext()) {
             String phone_numbre = cursor.getString(cursor.getColumnIndex(Telephony.Sms.ADDRESS));
-            Contacto contacto = contactService.findContactByPhoneNumbre(phone_numbre);
+            Contacto contacto = contactManager.findContactByPhoneNumbre(phone_numbre);
             if (contacto != null && contacto.getId() == contactoId) {
                 eventos.add(
                     new Evento(
