@@ -18,6 +18,8 @@ import utn.tdm.meegos.domain.Evento;
 import utn.tdm.meegos.fragment.HistoryContactListFragment.OnListFragmentInteractionListener;
 import utn.tdm.meegos.fragment.dummy.DummyContent.DummyItem;
 import utn.tdm.meegos.listener.OnListEventListener;
+import utn.tdm.meegos.util.Constants;
+import utn.tdm.meegos.util.DateUtil;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link DummyItem} and makes a call to the
@@ -70,19 +72,8 @@ public class HistoryContactListAdapter extends RecyclerView.Adapter<HistoryConta
         Calendar fecha = Calendar.getInstance();
         fecha.setTimeInMillis(evento.getFecha());
 
-        holder.fechaTextView.setText(
-                ((fecha.get(Calendar.DAY_OF_MONTH) < 10) ? ("0"+fecha.get(Calendar.DAY_OF_MONTH)) : (fecha.get(Calendar.DAY_OF_MONTH)))
-                + "/" +
-                ((fecha.get(Calendar.MONTH) < 10) ? ("0"+fecha.get(Calendar.MONTH)) : (fecha.get(Calendar.MONTH)))
-                + "/" +
-                fecha.get(Calendar.YEAR)
-                + " " +
-                ((fecha.get(Calendar.HOUR_OF_DAY) < 10) ? ("0"+fecha.get(Calendar.HOUR_OF_DAY)) : (fecha.get(Calendar.HOUR_OF_DAY)))
-                + ":" +
-                ((fecha.get(Calendar.MINUTE) < 10) ? ("0"+fecha.get(Calendar.MINUTE)) : (fecha.get(Calendar.MINUTE)))
-                + ":" +
-                ((fecha.get(Calendar.SECOND) < 10) ? ("0"+fecha.get(Calendar.SECOND)) : (fecha.get(Calendar.SECOND)))
-        );
+
+        holder.fechaTextView.setText(DateUtil.getCalendarAsString(fecha, Constants.CALENDAR_FORMAT_PATTERN));
 
         holder.deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
