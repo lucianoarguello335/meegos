@@ -12,7 +12,7 @@ public class EventsSQLiteHelper extends SQLiteOpenHelper {
 
     public static String DB_NAME = "meegosdb";
     public static int CURRENT_DB_VERSION = 1;
-    public static long CURRENT_ID;
+    public static long CURRENT_EVENTO_ID;
 
     private static SQLiteDatabase db;
 
@@ -22,23 +22,34 @@ public class EventsSQLiteHelper extends SQLiteOpenHelper {
         db = getWritableDatabase();
         Cursor c = db.rawQuery("SELECT MAX(id) FROM Eventos", null);
         if (c.moveToFirst()) {
-            CURRENT_ID = c.getInt(0);
+            CURRENT_EVENTO_ID = c.getInt(0);
         } else {
-            CURRENT_ID = 0;
+            CURRENT_EVENTO_ID = 0;
         }
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String sqlCreate = "Create TABLE Eventos(id INTEGER, tipo_evento INTEGER, fecha INTEGER, " +
+        String sqlEventosCreate = "Create TABLE Eventos(id INTEGER, tipo_evento INTEGER, fecha INTEGER, " +
                 "contacto_id INTEGER, contacto_lookup TEXT, contacto_nombre TEXT, contacto_numero TEXT, " +
-                "origen INTEGER, sms_web TEXT)";
-        db.execSQL(sqlCreate);
+                "origen INTEGER, sms_web TEXT);";
+
+        String sqlChatCreate = "Create TABLE Chat(id INTEGER, tipo_evento INTEGER, fecha INTEGER, " +
+                "contacto_id INTEGER, contacto_lookup TEXT, contacto_nombre TEXT, contacto_numero TEXT, " +
+                "origen INTEGER, sms_web TEXT);";
+
+        String sqlTransactionsCreate = "Create TABLE Transacciones(id INTEGER, request_name TEXT," +
+                "response_type TEXT, fecha INTEGER);";
+
+
+        db.execSQL(sqlEventosCreate + sqlChatCreate + sqlTransactionsCreate);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("Drop TABLE if exists Eventos");
+        db.execSQL("Drop TABLE if exists Chat");
+        db.execSQL("Drop TABLE if exists Transacciones");
         onCreate(db);
     }
 
@@ -55,10 +66,10 @@ public class EventsSQLiteHelper extends SQLiteOpenHelper {
     public void insertEvento(int tipo_evento, long fecha,
                              long contacto_id, String contacto_lookup, String contacto_nombre,
                              String contacto_numero, int origen, String sms_web) {
-        CURRENT_ID++;
+        CURRENT_EVENTO_ID++;
 
         ContentValues nuevoEvento = new ContentValues();
-        nuevoEvento.put("id", CURRENT_ID);
+        nuevoEvento.put("id", CURRENT_EVENTO_ID);
         nuevoEvento.put("tipo_evento", tipo_evento);
         nuevoEvento.put("fecha", fecha);
         nuevoEvento.put("contacto_id", contacto_id);
@@ -118,6 +129,33 @@ public class EventsSQLiteHelper extends SQLiteOpenHelper {
                 null,
                 selection.toString(),
                 arguments,
+                null,
+                null,
+                null
+        );
+        return c;
+    }
+
+    public void insertTransaccion(String id, String requestName, String responseType, long date) {
+        ContentValues nuevaTransaccion = new ContentValues();
+        nuevaTransaccion.put("id", id);
+        nuevaTransaccion.put("request_name", requestName);
+        nuevaTransaccion.put("response_type", responseType);
+        nuevaTransaccion.put("fecha", date);
+
+        SQLiteDatabase db = getWritableDatabase();
+        db.insert("Transacciones", null, nuevaTransaccion);
+
+        db.close();
+    }
+
+    public Cursor getAllTransacciones() {
+        db = getWritableDatabase();
+        Cursor c = db.query(
+                "Transacciones",
+                null,
+                null,
+                null,
                 null,
                 null,
                 null

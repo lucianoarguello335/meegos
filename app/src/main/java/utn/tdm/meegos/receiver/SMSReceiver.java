@@ -12,15 +12,15 @@ import java.util.Date;
 import utn.tdm.meegos.database.EventsSQLiteHelper;
 import utn.tdm.meegos.domain.Contacto;
 import utn.tdm.meegos.domain.Evento;
-import utn.tdm.meegos.service.ContactService;
+import utn.tdm.meegos.manager.ContactManager;
 
 public class SMSReceiver extends BroadcastReceiver {
 
-    ContactService contactService;
+    ContactManager contactManager;
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        contactService = new ContactService(context);
+        contactManager = new ContactManager(context);
         EventsSQLiteHelper db = new EventsSQLiteHelper(
                 context,
                 EventsSQLiteHelper.DB_NAME,
@@ -45,7 +45,7 @@ public class SMSReceiver extends BroadcastReceiver {
                     phoneNumber = pduMessage[i].getOriginatingAddress();
                 }
 
-                Contacto contacto = contactService.findContactByPhoneNumbre(phoneNumber);
+                Contacto contacto = contactManager.findContactByPhoneNumbre(phoneNumber);
 
                 if(contacto != null){
                     db.insertEvento(

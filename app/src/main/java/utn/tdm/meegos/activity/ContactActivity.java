@@ -1,8 +1,11 @@
 package utn.tdm.meegos.activity;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.view.DragEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -13,13 +16,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
 
 import utn.tdm.meegos.R;
 import utn.tdm.meegos.domain.Contacto;
 import utn.tdm.meegos.fragment.ContactListFragment;
+import utn.tdm.meegos.fragment.LogInFragment;
 
-public class ContactActivity extends AppCompatActivity implements ContactListFragment.OnListFragmentInteractionListener {
+public class ContactActivity extends AppCompatActivity implements ContactListFragment.OnListFragmentInteractionListener, LogInFragment.OnFragmentInteractionListener {
 
     public static final String[] MEEGOS_PERMISOS = {
         Manifest.permission.READ_CONTACTS,
@@ -28,7 +31,8 @@ public class ContactActivity extends AppCompatActivity implements ContactListFra
         Manifest.permission.READ_PHONE_STATE,
         Manifest.permission.READ_PHONE_NUMBERS,
         Manifest.permission.READ_CALL_LOG,
-        Manifest.permission.WRITE_CALL_LOG
+        Manifest.permission.WRITE_CALL_LOG,
+        Manifest.permission.INTERNET
     };
 
     @Override
@@ -37,6 +41,7 @@ public class ContactActivity extends AppCompatActivity implements ContactListFra
             boolean allPermission = true;
             for (int i=0; i < permissions.length; i++) {
                 if(ContextCompat.checkSelfPermission(this, permissions[i]) == PackageManager.PERMISSION_DENIED){
+                    this.enforceCallingPermission(permissions[i], permissions[i]);
                     allPermission = false;
                 }
             }
@@ -57,7 +62,6 @@ public class ContactActivity extends AppCompatActivity implements ContactListFra
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActivityCompat.requestPermissions(this, ContactActivity.MEEGOS_PERMISOS, 1);
-
 
 //        Cuando usamos emuladores de android no nos pide los permisos
 //        Por eso si no los tiene los pedimos en tiempo de ejecucion
@@ -96,18 +100,62 @@ public class ContactActivity extends AppCompatActivity implements ContactListFra
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+        switch (item.getItemId()) {
+            case R.id.action_chat:
+                // TODO: Esta el usuario logueado?
+                    // TODO: Si esta logueado ir al activity de chat
+                if(true) {
+                    startActivity(new Intent(this, ChatContactActivity.class));
+                } else {
+                    LogInFragment lf = new LogInFragment();
+                    lf.show(getSupportFragmentManager(), "LogInFragment");
+                }
+//                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//                builder.setTitle("Alert Dialog");
+//                builder.setMessage("Alert Dialog inside DialogFragment");
+//
+//                builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialogInterface, int i) {
+//                    }
+//                });
+//
+//                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                    }
+//                });
+//                builder.create();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+//                Toast.makeText(getApplicationContext(), "action_chat", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.action_settings:
+                Toast.makeText(getApplicationContext(), "action_settings", Toast.LENGTH_SHORT).show();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+//        return super.onOptionsItemSelected(item);
+    }
+
+    private MenuItem.OnMenuItemClickListener startChat = new MenuItem.OnMenuItemClickListener() {
+        @Override
+        public boolean onMenuItemClick(MenuItem menuItem) {
+            Toast.makeText(getApplicationContext(), "CHAT", Toast.LENGTH_SHORT).show();
             return true;
         }
+    };
 
-        return super.onOptionsItemSelected(item);
+    public boolean startChat222(View v) {
+        Toast.makeText(this, "CHAT", Toast.LENGTH_SHORT).show();
+        return true;
     }
 
     @Override
     public void onListFragmentInteraction(Contacto contacto) {
+    }
 
+    @Override
+    public void onFragmentInteraction(Uri uri) {
     }
 }

@@ -6,7 +6,6 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -26,14 +25,14 @@ import utn.tdm.meegos.util.DateUtil;
  * specified {@link OnListFragmentInteractionListener}.
  * TODO: Replace the implementation with code for your data type.
  */
-public class HistoryContactListAdapter extends RecyclerView.Adapter<HistoryContactListAdapter.ViewHolder> {
+public class TransactionListAdapter extends RecyclerView.Adapter<TransactionListAdapter.ViewHolder> {
 
 //    private final List<DummyItem> mValues;
     private List<Evento> eventos;
     private final OnListFragmentInteractionListener mListener;
     private final OnListEventListener onListEventListener;
 
-    public HistoryContactListAdapter(List<Evento> eventos, OnListEventListener onListEventListener) {
+    public TransactionListAdapter(List<Evento> eventos, OnListEventListener onListEventListener) {
         this.eventos = eventos;
         this.mListener = null;
         this.onListEventListener = onListEventListener;
@@ -46,7 +45,7 @@ public class HistoryContactListAdapter extends RecyclerView.Adapter<HistoryConta
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.history_contact_list_item_fragment, parent, false);
+                .inflate(R.layout.transaction_list_item_fragment, parent, false);
         return new ViewHolder(view);
     }
 

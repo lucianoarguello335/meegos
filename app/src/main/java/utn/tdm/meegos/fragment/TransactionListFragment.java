@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -12,9 +13,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import utn.tdm.meegos.R;
-import utn.tdm.meegos.adapter.ContactListAdapter;
-import utn.tdm.meegos.domain.Contacto;
-import utn.tdm.meegos.manager.ContactManager;
+import utn.tdm.meegos.adapter.HistoryContactListAdapter;
+import utn.tdm.meegos.domain.Evento;
+import utn.tdm.meegos.listener.OnListEventListener;
+import utn.tdm.meegos.manager.EventoManager;
 
 /**
  * A fragment representing a list of Items.
@@ -22,28 +24,29 @@ import utn.tdm.meegos.manager.ContactManager;
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
  */
-public class ContactListFragment extends Fragment {
+public class TransactionListFragment extends Fragment implements OnListEventListener {
 
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
     // TODO: Customize parameters
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
+    private OnListEventListener onListEventListener;
 
-    private RecyclerView recyclerView;
-    private ContactManager contactManager;
+    private EventoManager eventoManager;
+    private HistoryContactListAdapter historyContactListAdapter;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public ContactListFragment() {
+    public TransactionListFragment() {
     }
 
     // TODO: Customize parameter initialization
     @SuppressWarnings("unused")
-    public static ContactListFragment newInstance(int columnCount) {
-        ContactListFragment fragment = new ContactListFragment();
+    public static TransactionListFragment newInstance(int columnCount) {
+        TransactionListFragment fragment = new TransactionListFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_COLUMN_COUNT, columnCount);
         fragment.setArguments(args);
@@ -61,24 +64,49 @@ public class ContactListFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.contact_list_fragment, container, false);
+        View view = inflater.inflate(R.layout.transaction_list_fragment, container, false);
 
         // Set the adapter
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
-            recyclerView = (RecyclerView) view;
+            final RecyclerView recyclerView = (RecyclerView) view;
             if (mColumnCount <= 1) {
                 recyclerView.setLayoutManager(new LinearLayoutManager(context));
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            contactManager = new ContactManager(getContext());
+            eventoManager = new EventoManager(getContext());
+            Bundle bundle = getActivity().getIntent().getExtras();
+
+            historyContactListAdapter = new HistoryContactListAdapter(
+                    eventoManager.findEventosByContact(
+                            bundle.getLong("contact_id"),
+                            bundle.getString("contact_lookup"),
+                            bundle.getString("contact_nombre")
+                    ),
+                    new OnListEventListener() {
+                        @Override
+                        public void onDeleteEvent(Evento evento) {
+                            // TODO: Hacer un DialogFragment para confirmar operacin
+                            int result = eventoManager.deleteEvento(evento);
+                            Toast.makeText(
+                                    getContext(),
+                                    "Result: " + result,
+                                    Toast.LENGTH_SHORT
+                            ).show();
+                            historyContactListAdapter.setEventos(eventoManager.findEventosByContact(
+                                    evento.getContactoId(),
+                                    evento.getContactoLookup(),
+                                    evento.getContactoNombre()
+                            ));
+                            historyContactListAdapter.notifyDataSetChanged();
+                        }
+                    }
+            );
+
+            recyclerView.setAdapter(historyContactListAdapter);
         }
         return view;
-    }
-
-    public void onPermissionsAccepted() {
-        recyclerView.setAdapter(new ContactListAdapter(getContext(), contactManager.findAllContacts(), mListener));
     }
 
     @Override
@@ -98,6 +126,11 @@ public class ContactListFragment extends Fragment {
         mListener = null;
     }
 
+    @Override
+    public void onDeleteEvent(Evento evento) {
+
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -110,6 +143,6 @@ public class ContactListFragment extends Fragment {
      */
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onListFragmentInteraction(Contacto contacto);
+        void onListFragmentInteraction(Evento evento);
     }
 }

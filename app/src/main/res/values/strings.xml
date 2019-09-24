@@ -3,9 +3,39 @@
     <string name="action_settings">Settings</string>
 
     <string name="permission_denied">Must allow all permission to use the app.</string>
+
     <!--    List options-->
     <string name="list_no_data">No data found</string>
 
-
     <string name="title_activity_history_contact_list">Contact History</string>
+
+    <!--Log in-->
+    <string name="login_title">Create your account</string>
+    <string name="login_username">Username:</string>
+    <string name="login_username_hint">username</string>
+    <string name="login_pass">Password:</string>
+    <string name="login_pass_hint">password</string>
+    <string name="login_sign_up">Sign up for Meegos</string>
+
+<!--    Chat Errors-->
+    <string name="error_1">Error: Malformed xml</string>
+    <string name="error_2">Error: Missing request id</string>
+    <string name="error_3">Error: Malformed action request</string>
+    <string name="error_4">Error: Missing action parameter</string>
+    <string name="error_5">Error: Username already registered</string>
+    <string name="error_6">Error: Missing message</string>
+    <string name="error_7">Error: Invalid filter responseType</string>
+    <string name="error_8">Error: Invalid action</string>
+    <string name="error_9">Error: Missing action</string>
+    <string name="error_10">Error: Invalid http method requested</string>
+    <string name="error_11">Error: Username not registered</string>
+    <string name="error_12">Error: Authentication fail</string>
+    <string name="error_13">Error: Wrong parameter value</string>
+    <string name="error_default">Error: Unknowed error code</string>
+    <string name="min_username_length">Minimum username\'s length is 5</string>
+    <string name="max_username_length">Maximum username\'s length is 12</string>
+    <string name="min_password_length">Minimum password\'s length is 6</string>
+    <string name="max_password_length">Maximum password\'s length is 10</string>
+    <string name="min_message_length">Minimum message\'s length is 1</string>
+    <string name="max_message_length">Maximum message\'s length is 200</string>
 </resources>

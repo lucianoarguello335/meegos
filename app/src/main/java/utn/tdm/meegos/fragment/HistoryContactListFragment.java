@@ -12,14 +12,11 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ArrayList;
-
 import utn.tdm.meegos.R;
 import utn.tdm.meegos.adapter.HistoryContactListAdapter;
 import utn.tdm.meegos.domain.Evento;
-import utn.tdm.meegos.fragment.dummy.DummyContent.DummyItem;
 import utn.tdm.meegos.listener.OnListEventListener;
-import utn.tdm.meegos.service.EventoService;
+import utn.tdm.meegos.manager.EventoManager;
 
 /**
  * A fragment representing a list of Items.
@@ -36,7 +33,7 @@ public class HistoryContactListFragment extends Fragment implements OnListEventL
     private OnListFragmentInteractionListener mListener;
     private OnListEventListener onListEventListener;
 
-    private EventoService eventoService;
+    private EventoManager eventoManager;
     private HistoryContactListAdapter historyContactListAdapter;
 
     /**
@@ -78,11 +75,11 @@ public class HistoryContactListFragment extends Fragment implements OnListEventL
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            eventoService = new EventoService(getContext());
+            eventoManager = new EventoManager(getContext());
             Bundle bundle = getActivity().getIntent().getExtras();
 
             historyContactListAdapter = new HistoryContactListAdapter(
-                    eventoService.findEventosByContact(
+                    eventoManager.findEventosByContact(
                             bundle.getLong("contact_id"),
                             bundle.getString("contact_lookup"),
                             bundle.getString("contact_nombre")
@@ -91,13 +88,13 @@ public class HistoryContactListFragment extends Fragment implements OnListEventL
                         @Override
                         public void onDeleteEvent(Evento evento) {
                             // TODO: Hacer un DialogFragment para confirmar operacin
-                            int result = eventoService.deleteEvento(evento);
+                            int result = eventoManager.deleteEvento(evento);
                             Toast.makeText(
                                     getContext(),
                                     "Result: " + result,
                                     Toast.LENGTH_SHORT
                             ).show();
-                            historyContactListAdapter.setEventos(eventoService.findEventosByContact(
+                            historyContactListAdapter.setEventos(eventoManager.findEventosByContact(
                                     evento.getContactoId(),
                                     evento.getContactoLookup(),
                                     evento.getContactoNombre()
