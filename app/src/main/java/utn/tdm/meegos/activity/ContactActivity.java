@@ -2,10 +2,12 @@ package utn.tdm.meegos.activity;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.DragEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,6 +23,8 @@ import utn.tdm.meegos.R;
 import utn.tdm.meegos.domain.Contacto;
 import utn.tdm.meegos.fragment.ContactListFragment;
 import utn.tdm.meegos.fragment.LogInFragment;
+import utn.tdm.meegos.preferences.MeegosPreferences;
+import utn.tdm.meegos.receiver.NetworkStatusReceiver;
 
 public class ContactActivity extends AppCompatActivity implements ContactListFragment.OnListFragmentInteractionListener, LogInFragment.OnFragmentInteractionListener {
 
@@ -32,7 +36,9 @@ public class ContactActivity extends AppCompatActivity implements ContactListFra
         Manifest.permission.READ_PHONE_NUMBERS,
         Manifest.permission.READ_CALL_LOG,
         Manifest.permission.WRITE_CALL_LOG,
-        Manifest.permission.INTERNET
+        Manifest.permission.INTERNET,
+        Manifest.permission.ACCESS_NETWORK_STATE,
+        Manifest.permission.ACCESS_WIFI_STATE
     };
 
     @Override
@@ -41,7 +47,7 @@ public class ContactActivity extends AppCompatActivity implements ContactListFra
             boolean allPermission = true;
             for (int i=0; i < permissions.length; i++) {
                 if(ContextCompat.checkSelfPermission(this, permissions[i]) == PackageManager.PERMISSION_DENIED){
-                    this.enforceCallingPermission(permissions[i], permissions[i]);
+                    ActivityCompat.requestPermissions(this, ContactActivity.MEEGOS_PERMISOS, 1);
                     allPermission = false;
                 }
             }
@@ -96,38 +102,40 @@ public class ContactActivity extends AppCompatActivity implements ContactListFra
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+
+        /**
+         * Las apps que se orientan a Android 7.0 (nivel de API 24) y versiones posteriores
+         * no reciben emisiones de CONNECTIVITY_ACTION si especifican el receptor de emisión en su
+         * manifiesto. De igual manera, las apps recibirán emisiones de CONNECTIVITY_ACTION si
+         * registran su BroadcastReceiver con el Context.registerReceiver() y ese contexto
+         * sigue siendo válido.
+         * https://developer.android.com/training/monitoring-device-state/connectivity-monitoring
+         */
+        IntentFilter intentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+        getApplicationContext().registerReceiver(new NetworkStatusReceiver(), intentFilter);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         switch (item.getItemId()) {
             case R.id.action_chat:
-                // TODO: Esta el usuario logueado?
-                    // TODO: Si esta logueado ir al activity de chat
-                if(true) {
-                    startActivity(new Intent(this, ChatContactActivity.class));
+                String networkStatus = MeegosPreferences.getNetworkStatus(this);
+                String username = MeegosPreferences.getUsername(this);
+                if(networkStatus.equals("1")) {
+                    if (!username.isEmpty()) {
+                        startActivity(new Intent(this, ChatContactActivity.class));
+                    } else {
+                        LogInFragment lf = new LogInFragment();
+                        lf.show(getSupportFragmentManager(), "LogInFragment");
+                    }
                 } else {
-                    LogInFragment lf = new LogInFragment();
-                    lf.show(getSupportFragmentManager(), "LogInFragment");
+                    // TODO: si no esta conectado.
                 }
-//                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-//                builder.setTitle("Alert Dialog");
-//                builder.setMessage("Alert Dialog inside DialogFragment");
-//
-//                builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialogInterface, int i) {
-//                    }
-//                });
-//
-//                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//                    }
-//                });
-//                builder.create();
-
-//                Toast.makeText(getApplicationContext(), "action_chat", Toast.LENGTH_SHORT).show();
                 return true;
             case R.id.action_settings:
                 Toast.makeText(getApplicationContext(), "action_settings", Toast.LENGTH_SHORT).show();

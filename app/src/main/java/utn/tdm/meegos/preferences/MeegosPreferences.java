@@ -84,13 +84,33 @@ public class MeegosPreferences {
         editor.commit();
     }
 
-    public static String getNetworkStatusChange(Context context) {
+    public static String getNetworkStatus(Context context) {
         return getPrefs(context).getString("current_network_status", "-1");
     }
 
-    public static void setNetworkStatusChange(Context context, String value) {
+    public static void setNetworkStatus(Context context, String value) {
         SharedPreferences.Editor editor = getPrefs(context).edit();
         editor.putString("current_network_status", value);
+        editor.commit();
+    }
+
+    public static String getUsername(Context context) {
+        return getPrefs(context).getString("chat_username", "");
+    }
+
+    public static void setUsername(Context context, String value) {
+        SharedPreferences.Editor editor = getPrefs(context).edit();
+        editor.putString("chat_username", value);
+        editor.commit();
+    }
+
+    public static String getPassword(Context context) {
+        return getPrefs(context).getString("chat_password", "");
+    }
+
+    public static void setPassword(Context context, String value) {
+        SharedPreferences.Editor editor = getPrefs(context).edit();
+        editor.putString("chat_password", value);
         editor.commit();
     }
 }
