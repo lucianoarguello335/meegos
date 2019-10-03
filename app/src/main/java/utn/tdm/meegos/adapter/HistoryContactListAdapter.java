@@ -54,14 +54,14 @@ public class HistoryContactListAdapter extends RecyclerView.Adapter<HistoryConta
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         final Evento evento = eventos.get(position);
 
-        if (evento.getTipo() == 1) {
+        if (evento.getTipo() == Evento.LLAMADA) {
             holder.tipoEventoImageView.setImageResource(R.drawable.baseline_call_black_48);
         } else {
             holder.tipoEventoImageView.setImageResource(R.drawable.baseline_sms_black_48);
         }
         holder.tipoEventoImageView.setColorFilter(holder.view.getResources().getColor(R.color.list_tipo_evento,null));
 
-        if (evento.getOrigen() == 1) {
+        if (evento.getOrigen() == Evento.ENTRANTE) {
             holder.origenImageView.setImageResource(R.drawable.baseline_call_received_black_48);
             holder.origenImageView.setColorFilter(holder.view.getResources().getColor(R.color.colorPrimaryDark,null));
         } else {
@@ -71,7 +71,6 @@ public class HistoryContactListAdapter extends RecyclerView.Adapter<HistoryConta
 
         Calendar fecha = Calendar.getInstance();
         fecha.setTimeInMillis(evento.getFecha());
-
 
         holder.fechaTextView.setText(DateUtil.getCalendarAsString(fecha, Constants.CALENDAR_FORMAT_PATTERN));
 
