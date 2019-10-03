@@ -32,7 +32,7 @@ import utn.tdm.meegos.util.XMLDataBlock;
 public class LogInFragment extends DialogFragment {
 
     private static final String USERNAME = "username";
-    private static final String PASSWRORD= "password";
+    private static final String PASSWORD = "password";
 
     String username = "";
     String password = "";
@@ -44,7 +44,7 @@ public class LogInFragment extends DialogFragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             username = getArguments().getString(USERNAME);
-            password = getArguments().getString(PASSWRORD);
+            password = getArguments().getString(PASSWORD);
         }
     }
 
@@ -65,7 +65,7 @@ public class LogInFragment extends DialogFragment {
                 XMLDataBlock actionDetailBlock = new XMLDataBlock("action-detail", requestBodyBlock, null);
                 Hashtable<String, String> user = new Hashtable<>();
                 user.put(USERNAME, username.getText().toString());
-                user.put(PASSWRORD, password.getText().toString());
+                user.put(PASSWORD, password.getText().toString());
                 XMLDataBlock userBlock = new XMLDataBlock(
                         "user",
                         actionDetailBlock,
@@ -127,4 +127,3 @@ public class LogInFragment extends DialogFragment {
         void onFragmentInteraction(Uri uri);
     }
 }
-

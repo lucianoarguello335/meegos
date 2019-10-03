@@ -7,6 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -35,6 +37,7 @@ public class HistoryContactListFragment extends Fragment implements OnListEventL
 
     private EventoManager eventoManager;
     private HistoryContactListAdapter historyContactListAdapter;
+    private Bundle contactBundle;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -76,13 +79,13 @@ public class HistoryContactListFragment extends Fragment implements OnListEventL
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
             eventoManager = new EventoManager(getContext());
-            Bundle bundle = getActivity().getIntent().getExtras();
+            contactBundle = getActivity().getIntent().getExtras();
 
             historyContactListAdapter = new HistoryContactListAdapter(
                     eventoManager.findEventosByContact(
-                            bundle.getLong("contact_id"),
-                            bundle.getString("contact_lookup"),
-                            bundle.getString("contact_nombre")
+                            contactBundle.getLong("contact_id"),
+                            contactBundle.getString("contact_lookup"),
+                            contactBundle.getString("contact_nombre")
                     ),
                     new OnListEventListener() {
                         @Override
@@ -131,16 +134,19 @@ public class HistoryContactListFragment extends Fragment implements OnListEventL
 
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (contactBundle != null) {
+            historyContactListAdapter.setEventos(eventoManager.findEventosByContact(
+                    contactBundle.getLong("contact_id"),
+                    contactBundle.getString("contact_lookup"),
+                    contactBundle.getString("contact_nombre")
+            ));
+            historyContactListAdapter.notifyDataSetChanged();
+        }
+    }
+
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
         void onListFragmentInteraction(Evento evento);

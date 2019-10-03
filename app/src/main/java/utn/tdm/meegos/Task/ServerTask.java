@@ -40,6 +40,7 @@ public class ServerTask extends AsyncTask<XMLDataBlock, Void, XMLDataBlock> {
 
     @Override
     protected XMLDataBlock doInBackground(XMLDataBlock... requestBodyBlock) {
+        XMLDataBlock response = null;
         try {
             httpsURLConnection = (HttpsURLConnection) url.openConnection();
             httpsURLConnection.setRequestMethod("POST");
@@ -53,23 +54,23 @@ public class ServerTask extends AsyncTask<XMLDataBlock, Void, XMLDataBlock> {
                     new InputStreamReader(httpsURLConnection.getInputStream())
             );
 
-            String response = "", s = null;
+            String requestResponse = "", s = null;
             while ((s = in.readLine()) != null) {
-                response += s;
+                requestResponse += s;
             }
             CustomXMLParser customXMLParser = new CustomXMLParser();
-            customXMLParser.parse(response);
+            customXMLParser.parse(requestResponse);
 
             in.close();
             return customXMLParser.getDataBlock();
-        } catch (IOException e) {
-            e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
+            response.setAttribute("type", "exception");
+            response.setAttribute("message", e.getMessage());
         } finally {
             httpsURLConnection.disconnect();
         }
-        return null;
+        return response;
     }
 
     @Override
@@ -128,6 +129,8 @@ public class ServerTask extends AsyncTask<XMLDataBlock, Void, XMLDataBlock> {
             } else {
                 serverListener.toDoOnSuccessPostExecute(xmlDataBlock);
             }
+        } else if (xmlDataBlock.getAttribute("type").equals("exception")) {
+            Toast.makeText(context, xmlDataBlock.getAttribute("message"), Toast.LENGTH_LONG).show();
         }
     }
 

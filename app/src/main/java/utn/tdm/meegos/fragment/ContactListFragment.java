@@ -98,6 +98,14 @@ public class ContactListFragment extends Fragment {
         mListener = null;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (recyclerView.getAdapter() != null) {
+            recyclerView.setAdapter(new ContactListAdapter(getContext(), contactManager.findAllContacts(), mListener));
+        }
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated

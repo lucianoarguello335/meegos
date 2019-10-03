@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<!--    Meegos uses system values from here , please DO NOT TRANSLATE!-->
+<!--    Preference Values-->
+    <string-array name="contact_order_values">
+        <item>display_name</item>
+        <item>display_name_alt</item>
+    </string-array>
+    <string-array name="contact_criteria_values">
+        <item>ASC</item>
+        <item>DESC</item>
+    </string-array>
+
+    <string-array name="history_order_values">
+        <item>fecha ASC</item>
+        <item>fecha DESC</item><!-- <item>Los ultimos eventos arriba.</item>-->
+    </string-array>
+</resources>

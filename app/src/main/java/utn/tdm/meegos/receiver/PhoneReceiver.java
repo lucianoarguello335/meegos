@@ -20,7 +20,7 @@ public class PhoneReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-
+        contactManager = new ContactManager(context);
         EventsSQLiteHelper db = new EventsSQLiteHelper(
                 context,
                 EventsSQLiteHelper.DB_NAME,
