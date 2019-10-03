@@ -99,35 +99,24 @@ public class EventsSQLiteHelper extends SQLiteOpenHelper {
     /**
      *
      * @param contacto_id int > 0
-     * @param tipos_evento string format "1,2,3"
-     * @param origenes string format "1,2"
+     * @param selectionArguments string con la clausula where completa
      */
-    public Cursor getEventos(long contacto_id, String tipos_evento, String origenes) {
+    public Cursor getEventos(long contacto_id, String selectionArguments) {
+        String selection = "contacto_id=?";
+        String[] arguments;
 
-        StringBuilder selection = new StringBuilder();
-        ArrayList<String> argumentsList = new ArrayList();
-        if (contacto_id > 0) {
-            selection.append("contacto_id=?");
-            argumentsList.add(String.valueOf(contacto_id));
+        if(selectionArguments != null || !selectionArguments.isEmpty()) {
+            selection += " AND " + selectionArguments;
         }
-        if (tipos_evento != null && !tipos_evento.isEmpty()){
-            selection.append(" AND tipo_evento IN (?)");
-            argumentsList.add(tipos_evento);
-        }
-        if (origenes != null && !origenes.isEmpty()){
-            selection.append(" AND origenes IN (?)");
-            argumentsList.add(origenes);
-        }
-        String[] arguments = new String[argumentsList.size()];
-        for (int i = 0; i < argumentsList.size(); i++) {
-            arguments[i] = argumentsList.get(i);
-        }
+        arguments = new String[]{
+            String.valueOf(contacto_id)
+        };
 
         db = getWritableDatabase();
         Cursor c = db.query(
                 "Eventos",
                 null,
-                selection.toString(),
+                selection,
                 arguments,
                 null,
                 null,
