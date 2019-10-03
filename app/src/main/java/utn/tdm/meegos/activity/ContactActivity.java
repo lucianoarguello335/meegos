@@ -138,7 +138,11 @@ public class ContactActivity extends AppCompatActivity implements ContactListFra
                 }
                 return true;
             case R.id.action_settings:
-                Toast.makeText(getApplicationContext(), "action_settings", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(this, SettingsActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putInt("fragment", 1);
+                intent.putExtras(bundle);
+                startActivity(intent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

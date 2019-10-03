@@ -1,11 +1,14 @@
 package utn.tdm.meegos.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import utn.tdm.meegos.R;
@@ -49,8 +52,25 @@ public class HistoryContactActivity extends AppCompatActivity implements History
         return true;
     }
 
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                Intent intent = new Intent(this, SettingsActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putInt("fragment", 2);
+                intent.putExtras(bundle);
+                startActivity(intent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 
-//Listener del fragment
+    //Listener del fragment
 
     @Override
     public void onListFragmentInteraction(Evento evento) {

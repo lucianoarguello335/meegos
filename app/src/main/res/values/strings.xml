@@ -18,7 +18,7 @@
     <string name="login_pass_hint">password</string>
     <string name="login_sign_up">Sign up for Meegos</string>
 
-<!--    Chat Errors-->
+    <!--    Chat Errors-->
     <string name="error_1">Error: Malformed xml</string>
     <string name="error_2">Error: Missing request id</string>
     <string name="error_3">Error: Malformed action request</string>
@@ -39,4 +39,21 @@
     <string name="max_password_length">Maximum password\'s length is 10</string>
     <string name="min_message_length">Minimum message\'s length is 1</string>
     <string name="max_message_length">Maximum message\'s length is 200</string>
+    <string name="title_activity_settings">Settings</string>
+
+    <!-- Contact Settings Titles -->
+    <string name="title_order">Ordering</string>
+    <string name="title_filter">Filter</string>
+
+    <!-- Messages Preferences -->
+    <string name="order_by">Order by</string>
+    <string name="criteria">Criteria</string>
+    <string name="filter">Filter by</string>
+
+    <!-- Key Preferences -->
+    <string name="filter_call">Calls</string>
+    <string name="filter_sms">SMS</string>
+
+<!--    <string name="attachment_summary_on">Automatically download attachments for incoming emails</string>-->
+<!--    <string name="attachment_summary_off">Only download attachments when manually requested</string>-->
 </resources>

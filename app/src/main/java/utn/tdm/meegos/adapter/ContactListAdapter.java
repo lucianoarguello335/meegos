@@ -20,6 +20,7 @@ import utn.tdm.meegos.activity.HistoryContactActivity;
 import utn.tdm.meegos.domain.Contacto;
 import utn.tdm.meegos.fragment.ContactListFragment.OnListFragmentInteractionListener;
 import utn.tdm.meegos.fragment.dummy.DummyContent.DummyItem;
+import utn.tdm.meegos.preferences.MeegosPreferences;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link DummyItem} and makes a call to the
@@ -67,7 +68,13 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
             holder.mBadge.setImageBitmap(contacto.getPhotoThumbnail());
         }
 //        holder.mPosition.setText(String.valueOf(position));
-        holder.mContentView.setText(contacto.getNombre());
+
+        //Cargo el nombre segun la Preferences si ordena por nombre o apellido.
+        if (MeegosPreferences.getContactOrderBy(holder.mView.getContext()).equals("display_name")) {
+            holder.mContentView.setText(contacto.getNombre());
+        } else {
+            holder.mContentView.setText(contacto.getApellido());
+        }
 
         holder.historyButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,7 +89,7 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
                 intent.putExtras(bundle);
                 view.getContext().startActivity(intent);
             }
-        });
+         });
 
 //        holder.mView.setOnClickListener(new View.OnClickListener() {
 //            @Override
