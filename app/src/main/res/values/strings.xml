@@ -54,6 +54,19 @@
     <string name="filter_call">Calls</string>
     <string name="filter_sms">SMS</string>
 
+    <!-- Notifications Strings -->
+    <string name="notification_message_result_title_error">Error!</string>
+    <string name="notification_message_result_title_success">Success!</string>
+    <string name="notification_message_result_text_success">The message was successfully sent!</string>
+    <string name="notification_message_result_text_error">There was an error sending the message!</string>
+    <string name="notification_message_result_ticker_success">:)</string>
+    <string name="notification_message_result_ticker_error">:(</string>
+    <string name="notification_message_received_title">New message</string>
+    <string name="notification_message_received_ticker">New message</string>
+    <string name="notification_user_registered_title">User registered</string>
+    <string name="notification_user_registered_text">Your user has been successfully registered!</string>
+    <string name="notification_user_registered_ticker">User registered</string>
+
 <!--    <string name="attachment_summary_on">Automatically download attachments for incoming emails</string>-->
 <!--    <string name="attachment_summary_off">Only download attachments when manually requested</string>-->
 </resources>
