@@ -1,18 +1,19 @@
-package utn.tdm.meegos.Task;
+package utn.tdm.meegos.task;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.widget.Toast;
+import android.util.Log;
+import android.view.View;
+
+import com.google.android.material.snackbar.Snackbar;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-
-import javax.net.ssl.HttpsURLConnection;
 
 import utn.tdm.meegos.R;
 import utn.tdm.meegos.util.Constants;
@@ -29,20 +30,29 @@ public class ServerTask extends AsyncTask<XMLDataBlock, Void, XMLDataBlock> {
         }
     }
 
-    private HttpsURLConnection httpsURLConnection;
+//    private HttpsURLConnection httpsURLConnection;
+    private HttpURLConnection httpsURLConnection;
     private ServerListener serverListener;
     private Context context;
+    private View view;
 
-    public ServerTask(Context context, ServerListener serverListener) {
+    /**
+     *
+     * @param context
+     * @param view if view is null, error messages will print in console, othewise will run a Snackbar
+     * @param serverListener
+     */
+    public ServerTask(Context context, View view, ServerListener serverListener) {
         this.context = context;
+        this.view = view;
         this.serverListener = serverListener;
     }
 
     @Override
     protected XMLDataBlock doInBackground(XMLDataBlock... requestBodyBlock) {
-        XMLDataBlock response = null;
+        XMLDataBlock response = new XMLDataBlock("result", null, null);
         try {
-            httpsURLConnection = (HttpsURLConnection) url.openConnection();
+            httpsURLConnection = (HttpURLConnection) url.openConnection();
             httpsURLConnection.setRequestMethod("POST");
             httpsURLConnection.setDoOutput(true);
 
@@ -60,6 +70,7 @@ public class ServerTask extends AsyncTask<XMLDataBlock, Void, XMLDataBlock> {
             }
             CustomXMLParser customXMLParser = new CustomXMLParser();
             customXMLParser.parse(requestResponse);
+            response = customXMLParser.getDataBlock();
 
             in.close();
             return customXMLParser.getDataBlock();
@@ -68,7 +79,9 @@ public class ServerTask extends AsyncTask<XMLDataBlock, Void, XMLDataBlock> {
             response.setAttribute("type", "exception");
             response.setAttribute("message", e.getMessage());
         } finally {
-            httpsURLConnection.disconnect();
+            if (httpsURLConnection != null) {
+                httpsURLConnection.disconnect();
+            }
         }
         return response;
     }
@@ -77,9 +90,9 @@ public class ServerTask extends AsyncTask<XMLDataBlock, Void, XMLDataBlock> {
     protected void onPostExecute(XMLDataBlock xmlDataBlock) {
         super.onPostExecute(xmlDataBlock);
 
-        if (xmlDataBlock.getAttribute("type").equals("error")){
+        if (xmlDataBlock.getAttribute("type").equals("error")) {
             int Rid;
-            switch (xmlDataBlock.getChildBlock("detail").getAttribute("code")){
+            switch (xmlDataBlock.getChildBlock("detail").getAttribute("code")) {
                 case "1":
                     Rid = R.string.error_1;
                     break;
@@ -122,15 +135,23 @@ public class ServerTask extends AsyncTask<XMLDataBlock, Void, XMLDataBlock> {
                 default:
                     Rid = R.string.error_default;
             }
-            Toast.makeText(context, Rid, Toast.LENGTH_LONG).show();
+            if (view == null){
+                Log.e("onPostExecuteError", context.getString(Rid));
+            } else {
+                Snackbar.make(view, Rid, Snackbar.LENGTH_LONG).show();
+            }
+        } else if (xmlDataBlock.getAttribute("type").equals("exception")) {
+            if (view == null){
+                Log.e("onPostExecuteException", xmlDataBlock.getAttribute("message"));
+            } else {
+                Snackbar.make(view, xmlDataBlock.getAttribute("message"), Snackbar.LENGTH_LONG).show();
+            }
         } else if (xmlDataBlock.getAttribute("type").equals("success")) {
             if (serverListener == null) {
-                Toast.makeText(context, "Error: serverListener == null", Toast.LENGTH_LONG).show();
+                Snackbar.make(view, R.string.server_listener_null, Snackbar.LENGTH_LONG).show();
             } else {
                 serverListener.toDoOnSuccessPostExecute(xmlDataBlock);
             }
-        } else if (xmlDataBlock.getAttribute("type").equals("exception")) {
-            Toast.makeText(context, xmlDataBlock.getAttribute("message"), Toast.LENGTH_LONG).show();
         }
     }
 
@@ -138,6 +159,6 @@ public class ServerTask extends AsyncTask<XMLDataBlock, Void, XMLDataBlock> {
      * Interface para ejecutar cuando finaliza ok.
      */
     public interface ServerListener {
-        void toDoOnSuccessPostExecute(XMLDataBlock xmlDataBlock);
+        void toDoOnSuccessPostExecute(XMLDataBlock responseXMLDataBlock);
     }
 }
