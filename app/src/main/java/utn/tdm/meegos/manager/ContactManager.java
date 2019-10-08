@@ -15,30 +15,43 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import utn.tdm.meegos.database.EventsSQLiteHelper;
 import utn.tdm.meegos.domain.Contacto;
 import utn.tdm.meegos.preferences.MeegosPreferences;
 
 public class ContactManager {
     private final Context context;
+    private final EventsSQLiteHelper eventsSQLiteHelper;
 
     public ContactManager(Context context) {
         this.context = context;
+        eventsSQLiteHelper = new EventsSQLiteHelper(context, EventsSQLiteHelper.DB_NAME, null, EventsSQLiteHelper.CURRENT_DB_VERSION);
     }
 
     public ArrayList<Contacto> findAllContacts() {
         ArrayList<Contacto> contactos = new ArrayList<>();
         ContentResolver cr = context.getContentResolver();
+        String selection = MeegosPreferences.isContactHasPhoneNumberFiltered(context)
+            ? (ContactsContract.Contacts.HAS_PHONE_NUMBER + " = 1")
+            : "";
         Cursor cursor = cr.query(
                 ContactsContract.Contacts.CONTENT_URI,
                 null,
+                selection,
                 null,
-                null,
-                MeegosPreferences.getContactOrderBy(context) +
-                        " " +
-                        MeegosPreferences.getContactOrderCriteria(context)
+                MeegosPreferences.getContactOrderBy(context)
+                    + " "
+                    + MeegosPreferences.getContactOrderCriteria(context)
         );
 
         while (cursor.moveToNext()) {
+            String alias = "";
+            Cursor c = eventsSQLiteHelper.getAliasByContactLookupKey(
+                    cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.LOOKUP_KEY)));
+            if (c.moveToFirst()) {
+                alias = c.getString(1);
+            }
+
             /*
              * Assuming the current Cursor position is the contact you want, gets the thumbnail ID
              */
@@ -48,6 +61,7 @@ public class ContactManager {
                     cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.LOOKUP_KEY)),
                     cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME)),
                     cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME_ALTERNATIVE)),
+                    alias,
                     (thumbnailUri != null ? loadContactPhotoThumbnail(thumbnailUri) : null)
                 )
             );
@@ -89,6 +103,7 @@ public class ContactManager {
                     cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.LOOKUP_KEY)),
                     cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME)),
                     cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME_ALTERNATIVE)),
+                    "",
                     (thumbnailUri != null ? loadContactPhotoThumbnail(thumbnailUri) : null)
             );
 
