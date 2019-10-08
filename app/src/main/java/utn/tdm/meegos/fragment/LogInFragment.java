@@ -1,25 +1,27 @@
 package utn.tdm.meegos.fragment;
 
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
-import java.util.Hashtable;
-import java.util.UUID;
+import com.google.android.material.textfield.TextInputLayout;
 
 import utn.tdm.meegos.R;
-import utn.tdm.meegos.Task.ServerTask;
-import utn.tdm.meegos.activity.ChatContactActivity;
+import utn.tdm.meegos.task.ServerTask;
+import utn.tdm.meegos.preferences.MeegosPreferences;
 import utn.tdm.meegos.util.XMLDataBlock;
+import utn.tdm.meegos.util.XMLUtil;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -37,6 +39,12 @@ public class LogInFragment extends DialogFragment {
     String username = "";
     String password = "";
 
+    EditText usernameEditText;
+    EditText passwordEditText;
+
+    TextInputLayout usernameTIL;
+    TextInputLayout passwordTIL;
+
     private OnFragmentInteractionListener mListener;
 
     @Override
@@ -51,41 +59,92 @@ public class LogInFragment extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.log_in_fragment, container, false);
-        Button signUpButton = (Button) view.findViewById(R.id.login_sign_up);
+
+        usernameTIL = view.findViewById(R.id.loginUsernameTIL);
+        passwordTIL = view.findViewById(R.id.loginPasswordTIL);
+
+        usernameEditText = view.findViewById(R.id.loginUsername);
+        passwordEditText = view.findViewById(R.id.loginPassword);
+
+        usernameEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length()>0) {
+                    usernameTIL.setError(null);
+                    usernameTIL.setErrorEnabled(false);
+                }
+            }
+        });
+        passwordEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length()>0) {
+                    passwordTIL.setError(null);
+                    passwordTIL.setErrorEnabled(false);
+                }
+            }
+        });
+
+        Button signUpButton = view.findViewById(R.id.login_sign_up);
         signUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EditText username = (EditText) view.findViewById(R.id.loginUsername);
-                EditText password = (EditText) view.findViewById(R.id.loginPassword);
+                username = usernameEditText.getText().toString();
+                password = passwordEditText.getText().toString();
 
-                Hashtable<String, String> requestAttributes = new Hashtable<>();
-                requestAttributes.put("id", UUID.randomUUID().toString());
-                requestAttributes.put("name", "register-user");
-                XMLDataBlock requestBodyBlock = new XMLDataBlock("action", null, requestAttributes);
-                XMLDataBlock actionDetailBlock = new XMLDataBlock("action-detail", requestBodyBlock, null);
-                Hashtable<String, String> user = new Hashtable<>();
-                user.put(USERNAME, username.getText().toString());
-                user.put(PASSWORD, password.getText().toString());
-                XMLDataBlock userBlock = new XMLDataBlock(
-                        "user",
-                        actionDetailBlock,
-                        user
-                );
-                actionDetailBlock.addChild(userBlock);
-                requestBodyBlock.addChild(actionDetailBlock);
-                new ServerTask(getActivity().getApplicationContext(),
-                    new ServerTask.ServerListener() {
-                    @Override
-                    public void toDoOnSuccessPostExecute(XMLDataBlock xmlDataBlock) {
-                        dismiss();
-                        startActivity(new Intent(getActivity(), ChatContactActivity.class));
-                    }
-                }).execute(requestBodyBlock);
+                if (checkFields(username, password)){
+                    XMLDataBlock requestBodyBlock = XMLUtil.getDataBlockRegisterUser(username, password);
+
+                    new ServerTask(getActivity().getApplicationContext(), view,
+                        new ServerTask.ServerListener() {
+                            @Override
+                            public void toDoOnSuccessPostExecute(XMLDataBlock responseXMLDataBlock) {
+                                if (responseXMLDataBlock.getAttribute("type").equals("success")) {
+                                    //Registramos el usuario en las preferences
+                                    XMLDataBlock userblock = responseXMLDataBlock.getChildBlock("user");
+                                    MeegosPreferences.setUsername(getActivity(), userblock.getAttribute(USERNAME));
+                                    MeegosPreferences.setPassword(getActivity(), password);
+
+//                            Notificamos el registro
+                                    // TODO: Reemplazar por una notificacion
+                                    Toast.makeText(getContext(), "El usuario: " + userblock.getAttribute(USERNAME) + " ha sido creado.", Toast.LENGTH_SHORT).show();
+                                    dismiss();
+//                            startActivity(new Intent(getActivity(), ChatContactActivity.class));
+                                }
+                            }
+                        }).execute(requestBodyBlock);
+                }
             }
         });
 
         // Inflate the layout for this fragment
         return view;
+    }
+
+    private Boolean checkFields(String username, String password){
+        if(username.length() < 5) {
+            usernameTIL.setError(getString(R.string.min_username_length));
+            usernameTIL.setErrorEnabled(true);
+        return false;
+        }
+        if(password.length() < 6) {
+            passwordTIL.setError(getString(R.string.min_password_length));
+            passwordTIL.setErrorEnabled(true);
+            return false;
+        }
+        return true;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
