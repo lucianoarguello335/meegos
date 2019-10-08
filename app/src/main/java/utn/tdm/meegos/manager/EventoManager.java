@@ -23,7 +23,6 @@ public class EventoManager {
     private final Context context;
     EventsSQLiteHelper eventsSQLiteHelper;
     ContactManager contactManager;
-    MeegosPreferences meegosPreferences;
 
     public EventoManager(Context context) {
         this.context = context;
