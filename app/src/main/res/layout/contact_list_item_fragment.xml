@@ -1,34 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginTop="8dp"
     android:orientation="horizontal" >
 
     <QuickContactBadge
         android:id="@+id/quickbadge"
-        android:layout_width="63dp"
-        android:layout_height="match_parent" />
-
-    <!--    <TextView-->
-    <!--        android:id="@+id/position"-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="match_parent"-->
-    <!--        android:textAppearance="?android:attr/textAppearanceLarge" />-->
+        android:layout_width="50dp"
+        android:layout_height="50dp" />
 
     <TextView
         android:id="@+id/contactName"
+        android:layout_toEndOf="@+id/quickbadge"
+        android:layout_toStartOf="@id/contactHistoryButton"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/text_margin"
+        android:layout_centerVertical="true"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"/>
+
+<!--    <ImageButton-->
+<!--        android:id="@+id/contactHistoryButton"-->
+<!--        android:layout_alignParentEnd="true"-->
+<!--        android:layout_width="50dp"-->
+<!--        android:layout_height="50dp"-->
+<!--        android:background="@color/colorSecondary"-->
+<!--        android:src="@drawable/baseline_restore_black_48" />-->
+<!--    -->
 
     <ImageButton
         android:id="@+id/contactHistoryButton"
-        android:layout_width="63dp"
-        android:layout_height="match_parent"
+        android:layout_toStartOf="@id/contactChatButton"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:background="@color/colorSecondary"
         android:src="@drawable/baseline_restore_black_48" />
 
-</LinearLayout>
+    <ImageButton
+        android:id="@+id/contactChatButton"
+        android:layout_alignParentEnd="true"
+        android:layout_marginLeft="8dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@color/list_chat"
+        android:src="@drawable/baseline_chat_black_48" />
+
+</RelativeLayout>

@@ -28,28 +28,35 @@ public class EventsSQLiteHelper extends SQLiteOpenHelper {
         }
     }
 
+    private static long getNextID(){
+        return CURRENT_EVENTO_ID++;
+    }
+
     @Override
     public void onCreate(SQLiteDatabase db) {
         String sqlEventosCreate = "Create TABLE Eventos(id INTEGER, tipo_evento INTEGER, fecha INTEGER, " +
                 "contacto_id INTEGER, contacto_lookup TEXT, contacto_nombre TEXT, contacto_numero TEXT, " +
                 "origen INTEGER, sms_web TEXT);";
-
-        String sqlChatCreate = "Create TABLE Chat(id INTEGER, tipo_evento INTEGER, fecha INTEGER, " +
-                "contacto_id INTEGER, contacto_lookup TEXT, contacto_nombre TEXT, contacto_numero TEXT, " +
-                "origen INTEGER, sms_web TEXT);";
+        db.execSQL(sqlEventosCreate);
 
         String sqlTransactionsCreate = "Create TABLE Transacciones(id INTEGER, request_name TEXT," +
                 "response_type TEXT, fecha INTEGER);";
+        db.execSQL(sqlTransactionsCreate);
 
+        String sqlAliasCreate = "Create TABLE Alias(contacto_lookup TEXT, contacto_alias TEXT);";
+        db.execSQL(sqlAliasCreate);
 
-        db.execSQL(sqlEventosCreate + sqlChatCreate + sqlTransactionsCreate);
+        String sqlChatCreate = "Create TABLE Chats(id INTEGER, timestamp TEXT, toAlias TEXT, " +
+                "fromAlias TEXT, message TEXT);";
+        db.execSQL(sqlChatCreate);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("Drop TABLE if exists Eventos");
-        db.execSQL("Drop TABLE if exists Chat");
         db.execSQL("Drop TABLE if exists Transacciones");
+        db.execSQL("Drop TABLE if exists Alias");
+        db.execSQL("Drop TABLE if exists Chats");
         onCreate(db);
     }
 
@@ -66,10 +73,9 @@ public class EventsSQLiteHelper extends SQLiteOpenHelper {
     public void insertEvento(int tipo_evento, long fecha,
                              long contacto_id, String contacto_lookup, String contacto_nombre,
                              String contacto_numero, int origen, String sms_web) {
-        CURRENT_EVENTO_ID++;
 
         ContentValues nuevoEvento = new ContentValues();
-        nuevoEvento.put("id", CURRENT_EVENTO_ID);
+        nuevoEvento.put("id", getNextID());
         nuevoEvento.put("tipo_evento", tipo_evento);
         nuevoEvento.put("fecha", fecha);
         nuevoEvento.put("contacto_id", contacto_id);
@@ -144,6 +150,49 @@ public class EventsSQLiteHelper extends SQLiteOpenHelper {
                 "Transacciones",
                 null,
                 null,
+                null,
+                null,
+                null,
+                null
+        );
+        return c;
+    }
+
+    public Cursor getAliasByContactLookupKey(String contactLookupKey) {
+        db = getWritableDatabase();
+        Cursor c = db.query(
+                "Alias",
+                null,
+                "contacto_lookup = ?",
+                new String[]{contactLookupKey},
+                null,
+                null,
+                null
+        );
+        return c;
+    }
+
+    public long insertChat(long timestamp, String from, String to, String message) {
+        ContentValues nuevaTransaccion = new ContentValues();
+        nuevaTransaccion.put("id", getNextID());
+        nuevaTransaccion.put("timestamp", timestamp);
+        nuevaTransaccion.put("to", to);
+        nuevaTransaccion.put("from", from);
+        nuevaTransaccion.put("message", message);
+
+        SQLiteDatabase db = getWritableDatabase();
+        long result = db.insert("Chats", null, nuevaTransaccion);
+
+        db.close();
+        return result;
+    }
+
+    public Cursor findChatsByAlias(String selectionArguments){
+        db = getWritableDatabase();
+        Cursor c = db.query(
+                "Chats",
+                null,
+                selectionArguments,
                 null,
                 null,
                 null,

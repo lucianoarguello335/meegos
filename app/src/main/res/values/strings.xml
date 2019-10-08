@@ -12,10 +12,8 @@
 
     <!--Log in-->
     <string name="login_title">Create your account</string>
-    <string name="login_username">Username:</string>
-    <string name="login_username_hint">username</string>
-    <string name="login_pass">Password:</string>
-    <string name="login_pass_hint">password</string>
+    <string name="login_username_hint">Username</string>
+    <string name="login_pass_hint">Password</string>
     <string name="login_sign_up">Sign up for Meegos</string>
 
     <!--    Chat Errors-->
@@ -39,9 +37,10 @@
     <string name="max_password_length">Maximum password\'s length is 10</string>
     <string name="min_message_length">Minimum message\'s length is 1</string>
     <string name="max_message_length">Maximum message\'s length is 200</string>
-    <string name="title_activity_settings">Settings</string>
+    <string name="server_listener_null">ServerListener con not be null"</string>
 
     <!-- Contact Settings Titles -->
+    <string name="title_activity_settings">Settings</string>
     <string name="title_order">Ordering</string>
     <string name="title_filter">Filter</string>
 
@@ -53,6 +52,7 @@
     <!-- Key Preferences -->
     <string name="filter_call">Calls</string>
     <string name="filter_sms">SMS</string>
+    <string name="filter_has_phone_number">Only contacts with phone numbers</string>
 
 <!--    <string name="attachment_summary_on">Automatically download attachments for incoming emails</string>-->
 <!--    <string name="attachment_summary_off">Only download attachments when manually requested</string>-->

@@ -8,6 +8,8 @@
     android:layout_height="match_parent"
     android:layout_marginLeft="16dp"
     android:layout_marginRight="16dp"
+    android:paddingStart="8dp"
+    android:paddingEnd="8dp"
     app:layoutManager="LinearLayoutManager"
     tools:context=".fragment.HistoryContactListFragment"
     tools:listitem="@layout/history_contact_list_item_fragment" />

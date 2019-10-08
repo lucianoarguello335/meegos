@@ -3,12 +3,9 @@ package utn.tdm.meegos.receiver;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.XmlResourceParser;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.Bundle;
 
-import utn.tdm.meegos.R;
 import utn.tdm.meegos.preferences.MeegosPreferences;
 
 public class NetworkStatusReceiver extends BroadcastReceiver {

@@ -13,6 +13,8 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.snackbar.Snackbar;
+
 import java.util.ArrayList;
 
 import utn.tdm.meegos.R;
@@ -20,6 +22,7 @@ import utn.tdm.meegos.activity.HistoryContactActivity;
 import utn.tdm.meegos.domain.Contacto;
 import utn.tdm.meegos.fragment.ContactListFragment.OnListFragmentInteractionListener;
 import utn.tdm.meegos.fragment.dummy.DummyContent.DummyItem;
+import utn.tdm.meegos.manager.ChatManager;
 import utn.tdm.meegos.preferences.MeegosPreferences;
 
 /**
@@ -91,6 +94,19 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
             }
          });
 
+        holder.chatButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (contacto.getAlias().isEmpty()) {
+                    Snackbar.make(v, "contacto.getAlias().isEmpty()", Snackbar.LENGTH_LONG).show();
+                } else {
+                    Snackbar.make(v, R.string.error_1, Snackbar.LENGTH_LONG).show();
+                }
+            }
+        });
+
+
+
 //        holder.mView.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
@@ -109,6 +125,7 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
 //        public final TextView mPosition;
         public final TextView mContentView;
         public final ImageButton historyButton;
+        public final ImageButton chatButton;
 
         public ContactHolder(View view) {
             super(view);
@@ -117,6 +134,7 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
 //            mPosition = (TextView) view.findViewById(R.id.position);
             mContentView = (TextView) view.findViewById(R.id.contactName);
             historyButton = (ImageButton) view.findViewById(R.id.contactHistoryButton);
+            chatButton = (ImageButton) view.findViewById(R.id.contactChatButton);
         }
 
         @Override

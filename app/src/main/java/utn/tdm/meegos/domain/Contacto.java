@@ -8,13 +8,15 @@ public class Contacto {
     private String lookupKey;
     private String nombre;
     private String apellido;
+    private String alias;
     private Bitmap photoThumbnail;
 
-    public Contacto(Long id, String lookupKey, String nombre, String apellido, Bitmap photoThumbnail) {
+    public Contacto(Long id, String lookupKey, String nombre, String apellido, String alias, Bitmap photoThumbnail) {
         this.id = id;
         this.lookupKey = lookupKey;
         this.nombre = nombre;
         this.apellido = apellido;
+        this.alias = alias;
         this.photoThumbnail = photoThumbnail;
     }
 
@@ -48,6 +50,14 @@ public class Contacto {
 
     public void setApellido(String apellido) {
         this.apellido = apellido;
+    }
+
+    public String getAlias() {
+        return alias;
+    }
+
+    public void setAlias(String alias) {
+        this.alias = alias;
     }
 
     public Bitmap getPhotoThumbnail() {
