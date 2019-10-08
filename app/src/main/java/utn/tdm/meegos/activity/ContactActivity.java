@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
@@ -19,12 +18,16 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import utn.tdm.meegos.R;
 import utn.tdm.meegos.domain.Contacto;
 import utn.tdm.meegos.fragment.ContactListFragment;
 import utn.tdm.meegos.fragment.LogInFragment;
 import utn.tdm.meegos.preferences.MeegosPreferences;
 import utn.tdm.meegos.receiver.NetworkStatusReceiver;
+import utn.tdm.meegos.service.MessageService;
 
 public class ContactActivity extends AppCompatActivity implements ContactListFragment.OnListFragmentInteractionListener, LogInFragment.OnFragmentInteractionListener {
 
@@ -40,6 +43,8 @@ public class ContactActivity extends AppCompatActivity implements ContactListFra
         Manifest.permission.ACCESS_NETWORK_STATE,
         Manifest.permission.ACCESS_WIFI_STATE
     };
+
+    private Timer serviceTimer;
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -92,18 +97,6 @@ public class ContactActivity extends AppCompatActivity implements ContactListFra
 //                        .setAction("Action", null).show();
 //            }
 //        });
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.contact_menu, menu);
-        return true;
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
 
         /**
          * Las apps que se orientan a Android 7.0 (nivel de API 24) y versiones posteriores
@@ -115,6 +108,30 @@ public class ContactActivity extends AppCompatActivity implements ContactListFra
          */
         IntentFilter intentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
         getApplicationContext().registerReceiver(new NetworkStatusReceiver(), intentFilter);
+
+        // TODO: ELIMINAR
+        MeegosPreferences.setUsername(this, "");
+        MeegosPreferences.setPassword(this, "");
+
+//        Corremos el servicio para obtener los mensajes web
+        runMessageService();
+    }
+
+    public void runMessageService() {
+        serviceTimer = new Timer();
+        serviceTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                startService(new Intent(getApplicationContext(), MessageService.class));
+            }
+        },0, 15000);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.contact_menu, menu);
+        return true;
     }
 
     @Override
@@ -169,5 +186,12 @@ public class ContactActivity extends AppCompatActivity implements ContactListFra
 
     @Override
     public void onFragmentInteraction(Uri uri) {
+    }
+
+    @Override
+    protected void onDestroy() {
+//        Detenemos el servicio
+        serviceTimer.cancel();
+        super.onDestroy();
     }
 }
