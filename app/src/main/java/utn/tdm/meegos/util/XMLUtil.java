@@ -1,6 +1,12 @@
 package utn.tdm.meegos.util;
 
+import android.content.Context;
+
+import java.util.Calendar;
 import java.util.Hashtable;
+import java.util.UUID;
+
+import utn.tdm.meegos.preferences.MeegosPreferences;
 
 public class XMLUtil
 {
@@ -74,12 +80,85 @@ public class XMLUtil
         builder.append("]]>");
         return builder.toString();
     }
-    
+
     public static String getActionName(final XMLDataBlock db) {
         String action = null;
         if (db != null && "action".equals(db.getTagName())) {
             action = db.getAttribute("name");
         }
         return action;
+    }
+
+    public static XMLDataBlock getDataBlockRegisterUser(final String username, final String password) {
+//        action Block
+        XMLDataBlock requestBodyBlock = new XMLDataBlock("action", null, null);
+        requestBodyBlock.setAttribute("id", UUID.randomUUID().toString());
+        requestBodyBlock.setAttribute("name", "register-user");
+
+//        action-detail block
+        XMLDataBlock actionDetailBlock = new XMLDataBlock("action-detail", requestBodyBlock, null);
+
+//        user block
+        XMLDataBlock userBlock = new XMLDataBlock("user", actionDetailBlock, null);
+        userBlock.setAttribute("username", username);
+        userBlock.setAttribute("password", password);
+
+        actionDetailBlock.addChild(userBlock);
+        requestBodyBlock.addChild(actionDetailBlock);
+        return requestBodyBlock;
+    }
+
+    public static XMLDataBlock getDataBlockGetMessages(Context context) {
+//        action Block
+        XMLDataBlock requestBodyBlock = new XMLDataBlock("action", null, null);
+        requestBodyBlock.setAttribute("id", String.valueOf(Calendar.getInstance().getTimeInMillis()));
+        requestBodyBlock.setAttribute("name", "get-messages");
+
+//        action-detail block
+        XMLDataBlock actionDetailBlock = new XMLDataBlock("action-detail", requestBodyBlock, null);
+
+//        auth block
+        XMLDataBlock authBlock = new XMLDataBlock("auth", actionDetailBlock, null);
+        authBlock.setAttribute("username", MeegosPreferences.getUsername(context));
+        authBlock.setAttribute("key", MeegosPreferences.getPassword(context));
+
+//        filter block
+        XMLDataBlock filterBlock = new XMLDataBlock("filter", actionDetailBlock, null);
+        filterBlock.setAttribute("type", "timestamp");
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(MeegosPreferences.getTimestamp(context));
+        String timestamp = DateUtil.getCalendarAsString(calendar, Constants.CALENDAR_FORMAT_PATTERN);
+        filterBlock.addText(timestamp);
+
+        actionDetailBlock.addChild(authBlock);
+        actionDetailBlock.addChild(filterBlock);
+        requestBodyBlock.addChild(actionDetailBlock);
+        return requestBodyBlock;
+    }
+
+    public static XMLDataBlock getDataBlockSendMessage(final String toUsername, final String message, Context context) {
+//        action Block
+        XMLDataBlock requestBodyBlock = new XMLDataBlock("action", null, null);
+        requestBodyBlock.setAttribute("id", UUID.randomUUID().toString());
+        requestBodyBlock.setAttribute("name", "get-messages");
+
+//        action-detail block
+        XMLDataBlock actionDetailBlock = new XMLDataBlock("action-detail", requestBodyBlock, null);
+
+//        auth block
+        XMLDataBlock authBlock = new XMLDataBlock("auth", actionDetailBlock, null);
+        authBlock.setAttribute("username", MeegosPreferences.getUsername(context));
+        authBlock.setAttribute("key", MeegosPreferences.getPassword(context));
+
+//        message block
+        XMLDataBlock messageBlock = new XMLDataBlock("filter", actionDetailBlock, null);
+        messageBlock.setAttribute("to", toUsername);
+        messageBlock.addText(getCDATA(message));
+
+        actionDetailBlock.addChild(authBlock);
+        actionDetailBlock.addChild(messageBlock);
+        requestBodyBlock.addChild(actionDetailBlock);
+        return requestBodyBlock;
     }
 }
