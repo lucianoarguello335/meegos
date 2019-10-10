@@ -1,8 +1,10 @@
 package utn.tdm.meegos.manager;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.provider.CallLog;
 import android.provider.Telephony;
@@ -49,17 +51,17 @@ public class EventoManager {
             Contacto contacto = contactManager.findContactByPhoneNumbre(phone_numbre);
             if (contacto != null) {
                 eventos.add(
-                    new Evento(
-                        cursor.getLong(cursor.getColumnIndex(CallLog.Calls._ID)),
-                        Evento.LLAMADA,
-                        cursor.getLong(cursor.getColumnIndex(CallLog.Calls.DATE)),
-                        contacto.getId(),
-                        contacto.getLookupKey(),
-                        contacto.getNombre(),
-                        phone_numbre,
-                        Evento.SALIENTE,
-                        ""
-                    )
+                        new Evento(
+                                cursor.getLong(cursor.getColumnIndex(CallLog.Calls._ID)),
+                                Evento.LLAMADA,
+                                cursor.getLong(cursor.getColumnIndex(CallLog.Calls.DATE)),
+                                contacto.getId(),
+                                contacto.getLookupKey(),
+                                contacto.getNombre(),
+                                phone_numbre,
+                                Evento.SALIENTE,
+                                ""
+                        )
                 );
             }
         }
@@ -72,29 +74,29 @@ public class EventoManager {
         ArrayList<Evento> eventos = new ArrayList<>();
         ContentResolver cr = context.getContentResolver();
         Cursor cursor = cr.query(
-                Telephony.Sms.CONTENT_URI,
+                Telephony.Sms.Sent.CONTENT_URI,
                 null,
-                Telephony.Sms.TYPE + " = " + Telephony.Sms.MESSAGE_TYPE_SENT,
+                Telephony.Sms.Sent.TYPE + " = " + Telephony.Sms.Sent.MESSAGE_TYPE_SENT,
                 null,
                 null
         );
 
         while (cursor.moveToNext()) {
-            String phone_numbre = cursor.getString(cursor.getColumnIndex(Telephony.Sms.ADDRESS));
-            Contacto contacto = contactManager.findContactByPhoneNumbre(phone_numbre);
+            String phone_number = cursor.getString(cursor.getColumnIndex(Telephony.Sms.Sent.ADDRESS));
+            Contacto contacto = contactManager.findContactByPhoneNumbre(phone_number);
             if (contacto != null && contacto.getId() == contactoId) {
                 eventos.add(
-                    new Evento(
-                        cursor.getLong(cursor.getColumnIndex(Telephony.Sms._ID)),
-                        Evento.SMS,
-                        cursor.getLong(cursor.getColumnIndex(Telephony.Sms.DATE)),
-                        contacto.getId(),
-                        contacto.getLookupKey(),
-                        contacto.getNombre(),
-                        phone_numbre,
-                        Evento.SALIENTE,
-                        cursor.getString(cursor.getColumnIndex(Telephony.Sms.BODY))
-                    )
+                        new Evento(
+                                cursor.getLong(cursor.getColumnIndex(Telephony.Sms.Sent._ID)),
+                                Evento.SMS,
+                                cursor.getLong(cursor.getColumnIndex(Telephony.Sms.Sent.DATE)),
+                                contacto.getId(),
+                                contacto.getLookupKey(),
+                                contacto.getNombre(),
+                                phone_number,
+                                Evento.SALIENTE,
+                                cursor.getString(cursor.getColumnIndex(Telephony.Sms.Sent.BODY))
+                        )
                 );
             }
         }
@@ -117,17 +119,17 @@ public class EventoManager {
         Cursor cursor = eventsSQLiteHelper.getEventos(contactId, selection);
         while (cursor.moveToNext()) {
             eventos.add(
-                new Evento(
-                    cursor.getLong(0),
-                    cursor.getInt(1),
-                    cursor.getLong(2),
-                    cursor.getLong(3),
-                    cursor.getString(4),
-                    cursor.getString(5),
-                    cursor.getString(6),
-                    cursor.getInt(7),
-                    cursor.getString(8)
-                )
+                    new Evento(
+                            cursor.getLong(0),
+                            cursor.getInt(1),
+                            cursor.getLong(2),
+                            cursor.getLong(3),
+                            cursor.getString(4),
+                            cursor.getString(5),
+                            cursor.getString(6),
+                            cursor.getInt(7),
+                            cursor.getString(8)
+                    )
             );
         }
         cursor.close();
@@ -182,20 +184,35 @@ public class EventoManager {
         @SuppressLint("MissingPermission")
         int result = cr.delete(
                 CallLog.Calls.CONTENT_URI,
-                CallLog.Calls._ID + " = " + evento.getId(),
-                null
+                CallLog.Calls._ID + " = ?",
+                new String[]{String.valueOf(evento.getId())}
         );
         return result;
     }
 
+    /**
+     * Only the default SMS app (selected by the user in system settings) is able to write
+     * to the SMS Provider (the tables defined within the Telephony class).
+     *
+     * Other apps that are not selected as the default SMS app can only read the SMS Provider,
+     * but may also be notified when a new SMS arrives by listening for the
+     * Telephony.Sms.Intents.SMS_RECEIVED_ACTION broadcast, which is a non-abortable broadcast
+     * that may be delivered to multiple apps. This broadcast is intended for apps that—while
+     * not selected as the default SMS app—need to read special incoming messages
+     * such as to perform phone number verification.
+     *
+     * https://developer.android.com/reference/android/provider/Telephony.html
+     *
+     * @param evento
+     * @return
+     */
     private int deleteSentSMS(Evento evento) {
         ContentResolver cr = context.getContentResolver();
 
-        @SuppressLint("MissingPermission")
         int result = cr.delete(
-                Telephony.Sms.CONTENT_URI,
-                Telephony.Sms._ID + " = " + evento.getId(),
-                null
+                Telephony.Sms.Sent.CONTENT_URI,
+                Telephony.Sms.Sent._ID + " = ?",
+                new String[]{String.valueOf(evento.getId())}
         );
         return result;
     }
