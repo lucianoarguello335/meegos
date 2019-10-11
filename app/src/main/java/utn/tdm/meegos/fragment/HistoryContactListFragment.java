@@ -14,6 +14,8 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.snackbar.Snackbar;
+
 import utn.tdm.meegos.R;
 import utn.tdm.meegos.adapter.HistoryContactListAdapter;
 import utn.tdm.meegos.domain.Evento;
@@ -90,18 +92,21 @@ public class HistoryContactListFragment extends Fragment implements OnListEventL
                     new OnListEventListener() {
                         @Override
                         public void onDeleteEvent(Evento evento) {
-                            // TODO: Hacer un DialogFragment para confirmar operacin
+//                            Eliminamos el evento
                             int result = eventoManager.deleteEvento(evento);
-                            Toast.makeText(
-                                    getContext(),
-                                    "Result: " + result,
-                                    Toast.LENGTH_SHORT
-                            ).show();
+//                            Notificamos el resultado
+                            if (result > 0) {
+                                Toast.makeText(getContext(), R.string.deleted_success, Toast.LENGTH_LONG).show();
+                            } else {
+                                Snackbar.make(getView(), R.string.deleted_failed, Snackbar.LENGTH_LONG).show();
+                            }
+//                            Actualizamos la coleccion del adapter
                             historyContactListAdapter.setEventos(eventoManager.findEventosByContact(
                                     evento.getContactoId(),
                                     evento.getContactoLookup(),
                                     evento.getContactoNombre()
                             ));
+//                            ejecutamos el notifyDataSetChanged
                             historyContactListAdapter.notifyDataSetChanged();
                         }
                     }

@@ -1,15 +1,17 @@
 package utn.tdm.meegos.notifications;
 
-import android.app.PendingIntent;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
+import android.os.Build;
 
+import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 
 import utn.tdm.meegos.R;
-import utn.tdm.meegos.activity.ContactActivity;
 
 /*
 * https://github.com/lucianoarguello335/meegos/issues?q=is%3Aissue+is%3Aopen+label%3A%22Notification+Manager%22
@@ -22,7 +24,14 @@ import utn.tdm.meegos.activity.ContactActivity;
 
 public class MeegosNotifications {
 
+    private final static String meegosChannelId = "MeegosNotificationChannel";
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private final static NotificationChannel NOTIFICATION_CHANNEL = new NotificationChannel(
+            meegosChannelId,
+            meegosChannelId,
+            NotificationManager.IMPORTANCE_DEFAULT
+    );
 
     public static void messageResultNotification(Context context, boolean isSuccesful){
 
@@ -54,7 +63,7 @@ public class MeegosNotifications {
 
         // build notification using the outcome (success or fail)
         NotificationCompat.Builder mBuilder =
-                new NotificationCompat.Builder(context,"")
+                new NotificationCompat.Builder(context, meegosChannelId)
                         .setSmallIcon(smallIcon)
                         .setLargeIcon(largeIcon)
                         .setContentTitle(contentTitle)
@@ -62,7 +71,11 @@ public class MeegosNotifications {
                         //.setContentInfo("4")
                         .setTicker(ticker);
 
-        mBuilder.notify();
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            notificationManager.createNotificationChannel(NOTIFICATION_CHANNEL);
+        }
+        notificationManager.notify(200, mBuilder.build());
         /*
         Intent notIntent = new Intent(context, ContactActivity.class);
         PendingIntent contIntent = PendingIntent.getActivity(ContactActivity.this, 0, notIntent, 0);
@@ -71,23 +84,32 @@ public class MeegosNotifications {
     }
 
     public static void messageReceived(Context context, CharSequence messageText){
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context,"")
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context, meegosChannelId)
                 .setSmallIcon(R.drawable.baseline_sms_black_18)
                 .setLargeIcon(((BitmapDrawable) context.getResources().getDrawable(R.drawable.baseline_sms_black_36)).getBitmap())
                 .setContentTitle(context.getResources().getString(R.string.notification_message_received_title))
                 .setContentText(messageText)
                 .setTicker(context.getResources().getText(R.string.notification_message_received_ticker));
-        mBuilder.notify();
+
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            notificationManager.createNotificationChannel(NOTIFICATION_CHANNEL);
+        }
+        notificationManager.notify(meegosChannelId, 200, mBuilder.build());
     }
 
     public static void userRegistered(Context context){
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context,"")
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context, meegosChannelId)
                 .setSmallIcon(R.drawable.baseline_account_box_black_18)
                 .setLargeIcon(((BitmapDrawable) context.getResources().getDrawable(R.drawable.baseline_account_box_black_36)).getBitmap())
                 .setContentTitle(context.getResources().getString(R.string.notification_user_registered_title))
                 .setContentText(context.getResources().getString(R.string.notification_user_registered_text))
                 .setTicker(context.getResources().getString(R.string.notification_user_registered_ticker));
-        mBuilder.notify();
-    }
 
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            notificationManager.createNotificationChannel(NOTIFICATION_CHANNEL);
+        }
+        notificationManager.notify(meegosChannelId, 100, mBuilder.build());
+    }
 }

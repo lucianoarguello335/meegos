@@ -20,23 +20,23 @@ import java.util.ArrayList;
 import utn.tdm.meegos.R;
 import utn.tdm.meegos.activity.HistoryContactActivity;
 import utn.tdm.meegos.domain.Contacto;
-import utn.tdm.meegos.fragment.ContactListFragment.OnListFragmentInteractionListener;
+import utn.tdm.meegos.fragment.ContactListFragment;
+import utn.tdm.meegos.fragment.LogInFragment;
 import utn.tdm.meegos.fragment.dummy.DummyContent.DummyItem;
-import utn.tdm.meegos.manager.ChatManager;
 import utn.tdm.meegos.preferences.MeegosPreferences;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link DummyItem} and makes a call to the
- * specified {@link OnListFragmentInteractionListener}.
+ * specified {@link ContactListFragment.OnContactListFragmentListener}.
  * TODO: Replace the implementation with code for your data type.
  */
 public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.ContactHolder> {
 
     //    private final List<DummyItem> mValues;
     private final ArrayList<Contacto> contactos;
-    private final OnListFragmentInteractionListener mListener;
+    private final ContactListFragment.OnContactListFragmentListener mListener;
 
-    public ContactListAdapter(Context context, ArrayList<Contacto> contactos, OnListFragmentInteractionListener listener) {
+    public ContactListAdapter(Context context, ArrayList<Contacto> contactos, ContactListFragment.OnContactListFragmentListener listener) {
         this.contactos = contactos;
         mListener = listener;
     }
@@ -96,12 +96,8 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
 
         holder.chatButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                if (contacto.getAlias().isEmpty()) {
-                    Snackbar.make(v, "contacto.getAlias().isEmpty()", Snackbar.LENGTH_LONG).show();
-                } else {
-                    Snackbar.make(v, R.string.error_1, Snackbar.LENGTH_LONG).show();
-                }
+            public void onClick(View view) {
+
             }
         });
 

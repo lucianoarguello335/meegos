@@ -18,6 +18,8 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.google.android.material.snackbar.Snackbar;
+
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -29,19 +31,19 @@ import utn.tdm.meegos.preferences.MeegosPreferences;
 import utn.tdm.meegos.receiver.NetworkStatusReceiver;
 import utn.tdm.meegos.service.MessageService;
 
-public class ContactActivity extends AppCompatActivity implements ContactListFragment.OnListFragmentInteractionListener, LogInFragment.OnFragmentInteractionListener {
+public class ContactActivity extends AppCompatActivity implements ContactListFragment.OnContactListFragmentListener, LogInFragment.OnFragmentInteractionListener {
 
     public static final String[] MEEGOS_PERMISOS = {
-        Manifest.permission.READ_CONTACTS,
-        Manifest.permission.READ_SMS,
-        Manifest.permission.RECEIVE_SMS,
-        Manifest.permission.READ_PHONE_STATE,
-        Manifest.permission.READ_PHONE_NUMBERS,
-        Manifest.permission.READ_CALL_LOG,
-        Manifest.permission.WRITE_CALL_LOG,
-        Manifest.permission.INTERNET,
-        Manifest.permission.ACCESS_NETWORK_STATE,
-        Manifest.permission.ACCESS_WIFI_STATE
+            Manifest.permission.READ_CONTACTS,
+            Manifest.permission.READ_SMS,
+            Manifest.permission.RECEIVE_SMS,
+            Manifest.permission.READ_PHONE_STATE,
+            Manifest.permission.READ_PHONE_NUMBERS,
+            Manifest.permission.READ_CALL_LOG,
+            Manifest.permission.WRITE_CALL_LOG,
+            Manifest.permission.INTERNET,
+            Manifest.permission.ACCESS_NETWORK_STATE,
+            Manifest.permission.ACCESS_WIFI_STATE
     };
 
     private Timer serviceTimer;
@@ -50,8 +52,8 @@ public class ContactActivity extends AppCompatActivity implements ContactListFra
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == 1) {
             boolean allPermission = true;
-            for (int i=0; i < permissions.length; i++) {
-                if(ContextCompat.checkSelfPermission(this, permissions[i]) == PackageManager.PERMISSION_DENIED){
+            for (int i = 0; i < permissions.length; i++) {
+                if (ContextCompat.checkSelfPermission(this, permissions[i]) == PackageManager.PERMISSION_DENIED) {
                     ActivityCompat.requestPermissions(this, ContactActivity.MEEGOS_PERMISOS, 1);
                     allPermission = false;
                 }
@@ -124,7 +126,7 @@ public class ContactActivity extends AppCompatActivity implements ContactListFra
             public void run() {
                 startService(new Intent(getApplicationContext(), MessageService.class));
             }
-        },0, 15000);
+        }, 0, 15000);
     }
 
     @Override
@@ -143,7 +145,7 @@ public class ContactActivity extends AppCompatActivity implements ContactListFra
             case R.id.action_chat:
                 String networkStatus = MeegosPreferences.getNetworkStatus(this);
                 String username = MeegosPreferences.getUsername(this);
-                if(networkStatus.equals("1")) {
+                if (networkStatus.equals("1")) {
                     if (!username.isEmpty()) {
                         startActivity(new Intent(this, ChatContactActivity.class));
                     } else {
@@ -181,7 +183,32 @@ public class ContactActivity extends AppCompatActivity implements ContactListFra
     }
 
     @Override
-    public void onListFragmentInteraction(Contacto contacto) {
+    public void onChatInteraction(Contacto contacto, View view) {
+        String networkStatus = MeegosPreferences.getNetworkStatus(this);
+        String username = MeegosPreferences.getUsername(this);
+//        Nos fijamos si hay conexion
+        if (networkStatus.equals("1")) {
+//            Nos fijamos si el usuario esta registrado
+            if (!username.isEmpty()) {
+//                Nos fijamos si el contacto tiene un alias
+                if (!contacto.getAlias().isEmpty()) {
+//                    TODO: IR al CHAT
+//                    startActivity(new Intent(this, ChatContactActivity.class));
+                    Snackbar.make(view, "IR AL CHAT", Snackbar.LENGTH_LONG).show();
+                } else {
+//                    El contacto no tiene un alias
+//                    TODO: Crear fragment para registrar alias
+                    Snackbar.make(view, R.string.error_1, Snackbar.LENGTH_LONG).show();
+                }
+            } else {
+//                No tiene un usuario registrado
+                LogInFragment lf = new LogInFragment();
+                lf.show(getSupportFragmentManager(), "LogInFragment");
+            }
+        } else {
+//            No esta conectado a la red
+            Snackbar.make(view, R.string.network_not_connected, Snackbar.LENGTH_LONG).show();
+        }
     }
 
     @Override

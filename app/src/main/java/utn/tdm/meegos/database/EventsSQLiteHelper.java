@@ -12,7 +12,6 @@ public class EventsSQLiteHelper extends SQLiteOpenHelper {
 
     public static String DB_NAME = "meegosdb";
     public static int CURRENT_DB_VERSION = 1;
-    public static long CURRENT_EVENTO_ID;
 
     private static SQLiteDatabase db;
 
@@ -20,34 +19,24 @@ public class EventsSQLiteHelper extends SQLiteOpenHelper {
         super(context, name, factory, version);
 
         db = getWritableDatabase();
-        Cursor c = db.rawQuery("SELECT MAX(id) FROM Eventos", null);
-        if (c.moveToFirst()) {
-            CURRENT_EVENTO_ID = c.getInt(0);
-        } else {
-            CURRENT_EVENTO_ID = 0;
-        }
-    }
-
-    private static long getNextID(){
-        return CURRENT_EVENTO_ID++;
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String sqlEventosCreate = "Create TABLE Eventos(id INTEGER, tipo_evento INTEGER, fecha INTEGER, " +
-                "contacto_id INTEGER, contacto_lookup TEXT, contacto_nombre TEXT, contacto_numero TEXT, " +
-                "origen INTEGER, sms_web TEXT);";
+        String sqlEventosCreate = "Create TABLE Eventos(_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "tipo_evento INTEGER, fecha INTEGER, contacto_id INTEGER, contacto_lookup TEXT, " +
+                "contacto_nombre TEXT, contacto_numero TEXT, origen INTEGER, sms_web TEXT);";
         db.execSQL(sqlEventosCreate);
 
-        String sqlTransactionsCreate = "Create TABLE Transacciones(id INTEGER, request_name TEXT," +
-                "response_type TEXT, fecha INTEGER);";
+        String sqlTransactionsCreate = "Create TABLE Transacciones(_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "request_name TEXT, response_type TEXT, fecha INTEGER);";
         db.execSQL(sqlTransactionsCreate);
 
         String sqlAliasCreate = "Create TABLE Alias(contacto_lookup TEXT, contacto_alias TEXT);";
         db.execSQL(sqlAliasCreate);
 
-        String sqlChatCreate = "Create TABLE Chats(id INTEGER, timestamp TEXT, toAlias TEXT, " +
-                "fromAlias TEXT, message TEXT);";
+        String sqlChatCreate = "Create TABLE Chats(_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "timestamp TEXT, toAlias TEXT, fromAlias TEXT, message TEXT);";
         db.execSQL(sqlChatCreate);
     }
 
@@ -75,7 +64,7 @@ public class EventsSQLiteHelper extends SQLiteOpenHelper {
                              String contacto_numero, int origen, String sms_web) {
 
         ContentValues nuevoEvento = new ContentValues();
-        nuevoEvento.put("id", getNextID());
+
         nuevoEvento.put("tipo_evento", tipo_evento);
         nuevoEvento.put("fecha", fecha);
         nuevoEvento.put("contacto_id", contacto_id);
@@ -95,7 +84,7 @@ public class EventsSQLiteHelper extends SQLiteOpenHelper {
         db = getWritableDatabase();
         int outcome = db.delete(
                 "Eventos",
-                "id=?",
+                "_id=?",
                 new String[]{String.valueOf(id)}
                 );
         db.close();
@@ -133,7 +122,7 @@ public class EventsSQLiteHelper extends SQLiteOpenHelper {
 
     public void insertTransaccion(String id, String requestName, String responseType, long date) {
         ContentValues nuevaTransaccion = new ContentValues();
-        nuevaTransaccion.put("id", id);
+//        nuevaTransaccion.put("_id", id);
         nuevaTransaccion.put("request_name", requestName);
         nuevaTransaccion.put("response_type", responseType);
         nuevaTransaccion.put("fecha", date);
@@ -174,7 +163,6 @@ public class EventsSQLiteHelper extends SQLiteOpenHelper {
 
     public long insertChat(long timestamp, String from, String to, String message) {
         ContentValues nuevaTransaccion = new ContentValues();
-        nuevaTransaccion.put("id", getNextID());
         nuevaTransaccion.put("timestamp", timestamp);
         nuevaTransaccion.put("to", to);
         nuevaTransaccion.put("from", from);

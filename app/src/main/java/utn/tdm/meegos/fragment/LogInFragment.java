@@ -18,6 +18,7 @@ import androidx.fragment.app.Fragment;
 import com.google.android.material.textfield.TextInputLayout;
 
 import utn.tdm.meegos.R;
+import utn.tdm.meegos.notifications.MeegosNotifications;
 import utn.tdm.meegos.task.ServerTask;
 import utn.tdm.meegos.preferences.MeegosPreferences;
 import utn.tdm.meegos.util.XMLDataBlock;
@@ -107,21 +108,19 @@ public class LogInFragment extends DialogFragment {
                 if (checkFields(username, password)){
                     XMLDataBlock requestBodyBlock = XMLUtil.getDataBlockRegisterUser(username, password);
 
-                    new ServerTask(getActivity().getApplicationContext(), view,
+                    new ServerTask(getContext(), view,
                         new ServerTask.ServerListener() {
                             @Override
                             public void toDoOnSuccessPostExecute(XMLDataBlock responseXMLDataBlock) {
                                 if (responseXMLDataBlock.getAttribute("type").equals("success")) {
-                                    //Registramos el usuario en las preferences
+//                                    Registramos el usuario en las preferences
                                     XMLDataBlock userblock = responseXMLDataBlock.getChildBlock("user");
                                     MeegosPreferences.setUsername(getActivity(), userblock.getAttribute(USERNAME));
                                     MeegosPreferences.setPassword(getActivity(), password);
 
-//                            Notificamos el registro
-                                    // TODO: Reemplazar por una notificacion
-                                    Toast.makeText(getContext(), "El usuario: " + userblock.getAttribute(USERNAME) + " ha sido creado.", Toast.LENGTH_SHORT).show();
+//                                    Notificamos el registro
+                                    MeegosNotifications.userRegistered(getContext());
                                     dismiss();
-//                            startActivity(new Intent(getActivity(), ChatContactActivity.class));
                                 }
                             }
                         }).execute(requestBodyBlock);
