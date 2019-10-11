@@ -8,6 +8,8 @@
     <string name="list_no_data">No data found</string>
 
     <string name="title_activity_history_contact_list">Contact History</string>
+    <string name="deleted_success">Deleted success!</string>
+    <string name="deleted_failed">You cannot delete this event!</string>
     <string name="chat_contact_list">Meegos Chat</string>
 
     <!--Log in-->
@@ -37,7 +39,8 @@
     <string name="max_password_length">Maximum password\'s length is 10</string>
     <string name="min_message_length">Minimum message\'s length is 1</string>
     <string name="max_message_length">Maximum message\'s length is 200</string>
-    <string name="server_listener_null">ServerListener con not be null"</string>
+    <string name="server_listener_null">ServerListener con not be null</string>
+    <string name="network_not_connected">Network is not connected</string>
 
     <!-- Contact Settings Titles -->
     <string name="title_activity_settings">Settings</string>
