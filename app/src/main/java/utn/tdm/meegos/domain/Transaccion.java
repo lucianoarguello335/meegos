@@ -1,24 +1,40 @@
 package utn.tdm.meegos.domain;
 
 public class Transaccion {
-    String id;
+
+    String requestId;
+
+    /**
+     * register-user | send-message | get-messages
+     */
     String requestName;
+
+    /**
+     * succes | error
+     */
     String responseType;
+
+    String errorCode;
+
+    /**
+     * La fecha se representa en milisegundos.
+     */
     long fecha;
 
-    public Transaccion(String id, String requestName, String responseType, long fecha) {
-        this.id = id;
-        this.requestName = requestName;
-        this.responseType = responseType;
-        this.fecha = fecha;
+    public Transaccion() {
+        this.requestId = "";
+        this.requestName = "";
+        this.responseType = "";
+        this.errorCode = "";
+        this.fecha = 0;
     }
 
-    public String getId() {
-        return id;
+    public String getRequestId() {
+        return requestId;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setRequestId(String requestId) {
+        this.requestId = requestId;
     }
 
     public String getRequestName() {
@@ -37,6 +53,14 @@ public class Transaccion {
         this.responseType = responseType;
     }
 
+    public String getErrorCode() {
+        return errorCode;
+    }
+
+    public void setErrorCode(String errorCode) {
+        this.errorCode = errorCode;
+    }
+
     public long getFecha() {
         return fecha;
     }
@@ -48,9 +72,10 @@ public class Transaccion {
     @Override
     public String toString() {
         return "Transaccion{" +
-                "id='" + id + '\'' +
+                "requestId='" + requestId + '\'' +
                 ", requestName='" + requestName + '\'' +
                 ", responseType='" + responseType + '\'' +
+                ", errorCode='" + errorCode + '\'' +
                 ", fecha=" + fecha +
                 '}';
     }

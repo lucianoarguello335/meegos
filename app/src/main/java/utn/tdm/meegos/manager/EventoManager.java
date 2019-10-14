@@ -1,21 +1,16 @@
 package utn.tdm.meegos.manager;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.provider.CallLog;
 import android.provider.Telephony;
 
-import androidx.preference.PreferenceManager;
-
 import java.util.ArrayList;
 import java.util.Comparator;
 
-import utn.tdm.meegos.R;
-import utn.tdm.meegos.database.EventsSQLiteHelper;
+import utn.tdm.meegos.database.MeegosSQLHelper;
 import utn.tdm.meegos.domain.Contacto;
 import utn.tdm.meegos.domain.Evento;
 import utn.tdm.meegos.preferences.MeegosPreferences;
@@ -23,12 +18,12 @@ import utn.tdm.meegos.preferences.MeegosPreferences;
 public class EventoManager {
 
     private final Context context;
-    EventsSQLiteHelper eventsSQLiteHelper;
+    MeegosSQLHelper meegosSQLHelper;
     ContactManager contactManager;
 
     public EventoManager(Context context) {
         this.context = context;
-        this.eventsSQLiteHelper = new EventsSQLiteHelper(context, EventsSQLiteHelper.DB_NAME, null, EventsSQLiteHelper.CURRENT_DB_VERSION);
+        this.meegosSQLHelper = new MeegosSQLHelper(context);
         this.contactManager = new ContactManager(context);
     }
 
@@ -116,7 +111,7 @@ public class EventoManager {
         }
 
         ArrayList<Evento> eventos = new ArrayList<>();
-        Cursor cursor = eventsSQLiteHelper.getEventos(contactId, selection);
+        Cursor cursor = meegosSQLHelper.getEventos(contactId, selection);
         while (cursor.moveToNext()) {
             eventos.add(
                     new Evento(
@@ -174,7 +169,7 @@ public class EventoManager {
     }
 
     private int deleteEventoEntrante(Evento evento) {
-        int result = eventsSQLiteHelper.deleteEvento(evento.getId());
+        int result = meegosSQLHelper.deleteEvento(evento.getId());
         return result;
     }
 

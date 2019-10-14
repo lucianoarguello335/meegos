@@ -78,7 +78,7 @@ public class ContactListFragment extends Fragment {
     }
 
     public void onPermissionsAccepted() {
-        recyclerView.setAdapter(new ContactListAdapter(getContext(), contactManager.findAllContacts(), mListener));
+        recyclerView.setAdapter(new ContactListAdapter(getContext(), contactManager.findAllContacts(), (OnContactListFragmentListener) getActivity()));
     }
 
     @Override
@@ -102,7 +102,7 @@ public class ContactListFragment extends Fragment {
     public void onResume() {
         super.onResume();
         if (recyclerView.getAdapter() != null) {
-            recyclerView.setAdapter(new ContactListAdapter(getContext(), contactManager.findAllContacts(), mListener));
+            recyclerView.setAdapter(new ContactListAdapter(getContext(), contactManager.findAllContacts(), (OnContactListFragmentListener) getActivity()));
         }
     }
 

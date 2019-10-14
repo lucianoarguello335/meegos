@@ -6,22 +6,22 @@ import android.database.Cursor;
 import java.util.ArrayList;
 import java.util.Comparator;
 
-import utn.tdm.meegos.database.EventsSQLiteHelper;
+import utn.tdm.meegos.database.MeegosSQLHelper;
 import utn.tdm.meegos.domain.Chat;
 import utn.tdm.meegos.preferences.MeegosPreferences;
 
 public class ChatManager {
 
     private Context context;
-    EventsSQLiteHelper eventsSQLiteHelper;
+    MeegosSQLHelper meegosSQLHelper;
 
     public ChatManager(Context context) {
         this.context = context;
-        this.eventsSQLiteHelper = new EventsSQLiteHelper(context, EventsSQLiteHelper.DB_NAME, null, EventsSQLiteHelper.CURRENT_DB_VERSION);
+        this.meegosSQLHelper = new MeegosSQLHelper(context);
     }
 
     public void saveChat(long timestamp, String from, String to, String message) {
-        eventsSQLiteHelper.insertChat(timestamp, to, from, message);
+        meegosSQLHelper.insertChat(timestamp, to, from, message);
     }
 
     public ArrayList<Chat> findChatsByAlias(String alias) {
@@ -36,7 +36,7 @@ public class ChatManager {
 //        } else if (MeegosPreferences.isHistorySMSFiltered(context)) {
 //            selection = "tipo_evento = " + Evento.SMS;
 //        }
-        Cursor cursor = eventsSQLiteHelper.findChatsByAlias("to LIKE '" + alias + "' OR from LIKE '" + alias + "'");
+        Cursor cursor = meegosSQLHelper.findChatsByAlias("to LIKE '" + alias + "' OR from LIKE '" + alias + "'");
         while (cursor.moveToNext()) {
             chats.add(
                 new Chat(

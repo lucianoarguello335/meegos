@@ -18,6 +18,7 @@ import com.google.android.material.snackbar.Snackbar;
 import java.util.ArrayList;
 
 import utn.tdm.meegos.R;
+import utn.tdm.meegos.activity.ChatContactActivity;
 import utn.tdm.meegos.activity.HistoryContactActivity;
 import utn.tdm.meegos.domain.Contacto;
 import utn.tdm.meegos.fragment.ContactListFragment;
@@ -97,22 +98,9 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
         holder.chatButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                mListener.onChatInteraction(contacto, view);
             }
         });
-
-
-
-//        holder.mView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (null != mListener) {
-//                    // Notify the active callbacks interface (the activity, if the
-//                    // fragment is attached to one) that an item has been selected.
-//                    mListener.onListFragmentInteraction(holder.contacto);
-//                }
-//            }
-//        });
     }
 
     public class ContactHolder extends RecyclerView.ViewHolder {
@@ -138,4 +126,6 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
             return super.toString() + " '" + mContentView.getText() + "'";
         }
     }
+
+
 }

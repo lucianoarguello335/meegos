@@ -9,7 +9,7 @@ import android.util.Log;
 
 import java.util.Date;
 
-import utn.tdm.meegos.database.EventsSQLiteHelper;
+import utn.tdm.meegos.database.MeegosSQLHelper;
 import utn.tdm.meegos.domain.Contacto;
 import utn.tdm.meegos.domain.Evento;
 import utn.tdm.meegos.manager.ContactManager;
@@ -21,11 +21,7 @@ public class SMSReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         contactManager = new ContactManager(context);
-        EventsSQLiteHelper db = new EventsSQLiteHelper(
-                context,
-                EventsSQLiteHelper.DB_NAME,
-                null,
-                EventsSQLiteHelper.CURRENT_DB_VERSION);
+        MeegosSQLHelper db = new MeegosSQLHelper(context);
 
         Bundle extras = intent.getExtras();
         if (extras != null) {
