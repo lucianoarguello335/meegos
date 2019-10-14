@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">Meegos</string>
     <string name="action_settings">Settings</string>
+    <string name="action_account">New Account</string>
+    <string name="action_transactions">Transactions</string>
 
     <string name="permission_denied">Must allow all permission to use the app.</string>
 
@@ -13,10 +15,15 @@
     <string name="chat_contact_list">Meegos Chat</string>
 
     <!--Log in-->
-    <string name="login_title">Create your account</string>
+    <string name="login_title">Create new account</string>
     <string name="login_username_hint">Username</string>
     <string name="login_pass_hint">Password</string>
     <string name="login_sign_up">Sign up for Meegos</string>
+
+<!--    Alias-->
+    <string name="alias_title">Create alias for contact</string>
+    <string name="alias_sign_up">Register Alias</string>
+    <string name="alias_registered">Alias Registered</string>
 
     <!--    Chat Errors-->
     <string name="error_1">Error: Malformed xml</string>
@@ -33,6 +40,8 @@
     <string name="error_12">Error: Authentication fail</string>
     <string name="error_13">Error: Wrong parameter value</string>
     <string name="error_default">Error: Unknowed error code</string>
+    <string name="min_alias_length">Minimum alia\'s length is 5</string>
+    <string name="max_alias_length">Maximum alia\'s length is 12</string>
     <string name="min_username_length">Minimum username\'s length is 5</string>
     <string name="max_username_length">Maximum username\'s length is 12</string>
     <string name="min_password_length">Minimum password\'s length is 6</string>
