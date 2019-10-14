@@ -25,6 +25,7 @@ import java.util.TimerTask;
 
 import utn.tdm.meegos.R;
 import utn.tdm.meegos.domain.Contacto;
+import utn.tdm.meegos.fragment.AliasFragment;
 import utn.tdm.meegos.fragment.ContactListFragment;
 import utn.tdm.meegos.fragment.LogInFragment;
 import utn.tdm.meegos.preferences.MeegosPreferences;
@@ -76,30 +77,6 @@ public class ContactActivity extends AppCompatActivity implements ContactListFra
         setSupportActionBar(toolbar);
         ActivityCompat.requestPermissions(this, ContactActivity.MEEGOS_PERMISOS, 1);
 
-//        Cuando usamos emuladores de android no nos pide los permisos
-//        Por eso si no los tiene los pedimos en tiempo de ejecucion
-//        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_SMS) != PackageManager.PERMISSION_GRANTED
-//                || ContextCompat.checkSelfPermission(this, Manifest.permission.RECEIVE_SMS) != PackageManager.PERMISSION_GRANTED
-//                || ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-//            Log.d("PERMISSION_GRANTED", "FALSE");
-//            if(ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.RECEIVE_SMS)) {
-//                Log.d("PermissionDenied", "TRUE");
-//            } else {
-//                Log.d("PermissionDenied", "FALSE");
-//            }
-//        } else {
-//            Log.d("PERMISSION_GRANTED", "TRUE");
-//        }
-
-//        FloatingActionButton fab = findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
-
         /**
          * Las apps que se orientan a Android 7.0 (nivel de API 24) y versiones posteriores
          * no reciben emisiones de CONNECTIVITY_ACTION si especifican el receptor de emisión en su
@@ -112,8 +89,8 @@ public class ContactActivity extends AppCompatActivity implements ContactListFra
         getApplicationContext().registerReceiver(new NetworkStatusReceiver(), intentFilter);
 
         // TODO: ELIMINAR
-        MeegosPreferences.setUsername(this, "");
-        MeegosPreferences.setPassword(this, "");
+        MeegosPreferences.setUsername(this, "poipoi");
+        MeegosPreferences.setPassword(this, "123456");
 
 //        Corremos el servicio para obtener los mensajes web
         runMessageService();
@@ -138,48 +115,25 @@ public class ContactActivity extends AppCompatActivity implements ContactListFra
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         switch (item.getItemId()) {
-            case R.id.action_chat:
-                String networkStatus = MeegosPreferences.getNetworkStatus(this);
-                String username = MeegosPreferences.getUsername(this);
-                if (networkStatus.equals("1")) {
-                    if (!username.isEmpty()) {
-                        startActivity(new Intent(this, ChatContactActivity.class));
-                    } else {
-                        LogInFragment lf = new LogInFragment();
-                        lf.show(getSupportFragmentManager(), "LogInFragment");
-                    }
-                } else {
-                    // TODO: si no esta conectado.
-                }
-                return true;
             case R.id.action_settings:
-                Intent intent = new Intent(this, SettingsActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putInt("fragment", 1);
-                intent.putExtras(bundle);
-                startActivity(intent);
+                Intent intentSettings = new Intent(this, SettingsActivity.class);
+                Bundle bundleSettings = new Bundle();
+                bundleSettings.putInt("fragment", 1);
+                intentSettings.putExtras(bundleSettings);
+                startActivity(intentSettings);
+                return true;
+            case R.id.action_account:
+                LogInFragment lf = new LogInFragment();
+                lf.show(getSupportFragmentManager(), "LogInFragment");
+                return true;
+            case R.id.action_transactions:
+                Intent intentTransactions = new Intent(this, TransactionActivity.class);
+                startActivity(intentTransactions);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
-//        return super.onOptionsItemSelected(item);
-    }
-
-    private MenuItem.OnMenuItemClickListener startChat = new MenuItem.OnMenuItemClickListener() {
-        @Override
-        public boolean onMenuItemClick(MenuItem menuItem) {
-            Toast.makeText(getApplicationContext(), "CHAT", Toast.LENGTH_SHORT).show();
-            return true;
-        }
-    };
-
-    public boolean startChat222(View v) {
-        Toast.makeText(this, "CHAT", Toast.LENGTH_SHORT).show();
-        return true;
     }
 
     @Override
@@ -197,8 +151,11 @@ public class ContactActivity extends AppCompatActivity implements ContactListFra
                     Snackbar.make(view, "IR AL CHAT", Snackbar.LENGTH_LONG).show();
                 } else {
 //                    El contacto no tiene un alias
-//                    TODO: Crear fragment para registrar alias
-                    Snackbar.make(view, R.string.error_1, Snackbar.LENGTH_LONG).show();
+                    AliasFragment af = new AliasFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putString(AliasFragment.CONTACTO_LOOKUP, contacto.getLookupKey());
+                    af.setArguments(bundle);
+                    af.show(getSupportFragmentManager(), "AliasFragment");
                 }
             } else {
 //                No tiene un usuario registrado
