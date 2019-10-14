@@ -8,24 +8,23 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.provider.ContactsContract;
-import android.util.Log;
 
 import java.io.FileDescriptor;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import utn.tdm.meegos.database.EventsSQLiteHelper;
+import utn.tdm.meegos.database.MeegosSQLHelper;
 import utn.tdm.meegos.domain.Contacto;
 import utn.tdm.meegos.preferences.MeegosPreferences;
 
 public class ContactManager {
     private final Context context;
-    private final EventsSQLiteHelper eventsSQLiteHelper;
+    private final MeegosSQLHelper meegosSQLHelper;
 
     public ContactManager(Context context) {
         this.context = context;
-        eventsSQLiteHelper = new EventsSQLiteHelper(context, EventsSQLiteHelper.DB_NAME, null, EventsSQLiteHelper.CURRENT_DB_VERSION);
+        meegosSQLHelper = new MeegosSQLHelper(context);
     }
 
     public ArrayList<Contacto> findAllContacts() {
@@ -46,7 +45,7 @@ public class ContactManager {
 
         while (cursor.moveToNext()) {
             String alias = "";
-            Cursor c = eventsSQLiteHelper.getAliasByContactLookupKey(
+            Cursor c = meegosSQLHelper.getAliasByContactLookupKey(
                     cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.LOOKUP_KEY)));
             if (c.moveToFirst()) {
                 alias = c.getString(1);

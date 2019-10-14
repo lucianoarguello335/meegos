@@ -8,16 +8,17 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import java.util.ArrayList;
 
-public class EventsSQLiteHelper extends SQLiteOpenHelper {
+import utn.tdm.meegos.domain.Transaccion;
+
+public class MeegosSQLHelper extends SQLiteOpenHelper {
 
     public static String DB_NAME = "meegosdb";
     public static int CURRENT_DB_VERSION = 1;
 
     private static SQLiteDatabase db;
 
-    public EventsSQLiteHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
-        super(context, name, factory, version);
-
+    public MeegosSQLHelper(Context context) {
+        super(context, DB_NAME, null, CURRENT_DB_VERSION);
         db = getWritableDatabase();
     }
 
@@ -29,7 +30,7 @@ public class EventsSQLiteHelper extends SQLiteOpenHelper {
         db.execSQL(sqlEventosCreate);
 
         String sqlTransactionsCreate = "Create TABLE Transacciones(_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "request_name TEXT, response_type TEXT, fecha INTEGER);";
+                "request_name TEXT, response_type TEXT, error_code TEXT, fecha INTEGER);";
         db.execSQL(sqlTransactionsCreate);
 
         String sqlAliasCreate = "Create TABLE Alias(contacto_lookup TEXT, contacto_alias TEXT);";
@@ -120,12 +121,37 @@ public class EventsSQLiteHelper extends SQLiteOpenHelper {
         return c;
     }
 
-    public void insertTransaccion(String id, String requestName, String responseType, long date) {
+    public void insertAlias(String contactLookupKey, String contactoAlias) {
+        ContentValues nuevoAlias = new ContentValues();
+        nuevoAlias.put("contacto_lookup", contactLookupKey);
+        nuevoAlias.put("contacto_alias", contactoAlias);
+
+        SQLiteDatabase db = getWritableDatabase();
+        db.insert("Alias", null, nuevoAlias);
+        db.close();
+    }
+
+    public Cursor getAliasByContactLookupKey(String contactLookupKey) {
+        db = getWritableDatabase();
+        Cursor c = db.query(
+                "Alias",
+                null,
+                "contacto_lookup = ?",
+                new String[]{contactLookupKey},
+                null,
+                null,
+                null
+        );
+        return c;
+    }
+
+    public void insertTransaccion(Transaccion transaccion) {
         ContentValues nuevaTransaccion = new ContentValues();
-//        nuevaTransaccion.put("_id", id);
-        nuevaTransaccion.put("request_name", requestName);
-        nuevaTransaccion.put("response_type", responseType);
-        nuevaTransaccion.put("fecha", date);
+        nuevaTransaccion.put("request_id", transaccion.getRequestId());
+        nuevaTransaccion.put("request_name", transaccion.getRequestName());
+        nuevaTransaccion.put("response_type", transaccion.getResponseType());
+        nuevaTransaccion.put("error_code", transaccion.getErrorCode());
+        nuevaTransaccion.put("fecha", transaccion.getFecha());
 
         SQLiteDatabase db = getWritableDatabase();
         db.insert("Transacciones", null, nuevaTransaccion);
@@ -140,20 +166,6 @@ public class EventsSQLiteHelper extends SQLiteOpenHelper {
                 null,
                 null,
                 null,
-                null,
-                null,
-                null
-        );
-        return c;
-    }
-
-    public Cursor getAliasByContactLookupKey(String contactLookupKey) {
-        db = getWritableDatabase();
-        Cursor c = db.query(
-                "Alias",
-                null,
-                "contacto_lookup = ?",
-                new String[]{contactLookupKey},
                 null,
                 null,
                 null

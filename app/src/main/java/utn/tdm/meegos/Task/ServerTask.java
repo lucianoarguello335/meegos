@@ -14,8 +14,11 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Calendar;
 
 import utn.tdm.meegos.R;
+import utn.tdm.meegos.database.MeegosSQLHelper;
+import utn.tdm.meegos.domain.Transaccion;
 import utn.tdm.meegos.util.Constants;
 import utn.tdm.meegos.util.CustomXMLParser;
 import utn.tdm.meegos.util.XMLDataBlock;
@@ -29,8 +32,7 @@ public class ServerTask extends AsyncTask<XMLDataBlock, Void, XMLDataBlock> {
             e.printStackTrace();
         }
     }
-
-//    private HttpsURLConnection httpsURLConnection;
+    private Transaccion transaccion;
     private HttpURLConnection httpsURLConnection;
     private ServerListener serverListener;
     private Context context;
@@ -46,10 +48,17 @@ public class ServerTask extends AsyncTask<XMLDataBlock, Void, XMLDataBlock> {
         this.context = context;
         this.view = view;
         this.serverListener = serverListener;
+        this.transaccion = new Transaccion();
     }
 
     @Override
-    protected XMLDataBlock doInBackground(XMLDataBlock... requestBodyBlock) {
+    protected XMLDataBlock doInBackground(XMLDataBlock... xmlDataBlocks) {
+        XMLDataBlock requestBodyBlock = xmlDataBlocks[0];
+//        Registramos transaccion
+        transaccion.setRequestId(requestBodyBlock.getAttribute("id"));
+        transaccion.setRequestName(requestBodyBlock.getAttribute("name"));
+        transaccion.setFecha(Calendar.getInstance().getTimeInMillis());
+
         XMLDataBlock response = new XMLDataBlock("result", null, null);
         try {
             httpsURLConnection = (HttpURLConnection) url.openConnection();
@@ -57,7 +66,7 @@ public class ServerTask extends AsyncTask<XMLDataBlock, Void, XMLDataBlock> {
             httpsURLConnection.setDoOutput(true);
 
             OutputStream out = new BufferedOutputStream(httpsURLConnection.getOutputStream());
-            out.write(requestBodyBlock[0].getBytes());
+            out.write(requestBodyBlock.getBytes());
             out.close();
 
             BufferedReader in = new BufferedReader(
@@ -89,47 +98,48 @@ public class ServerTask extends AsyncTask<XMLDataBlock, Void, XMLDataBlock> {
     @Override
     protected void onPostExecute(XMLDataBlock xmlDataBlock) {
         super.onPostExecute(xmlDataBlock);
+        registerRequest(xmlDataBlock);
 
         if (xmlDataBlock.getAttribute("type").equals("error")) {
             int Rid;
-            switch (xmlDataBlock.getChildBlock("detail").getAttribute("code")) {
-                case "1":
+            switch (Integer.parseInt(xmlDataBlock.getChildBlock("detail").getAttribute("code"))) {
+                case Constants.ERROR_MALFORMED_XML:
                     Rid = R.string.error_1;
                     break;
-                case "2":
+                case Constants.ERROR_MISSING_REQUEST_ID:
                     Rid = R.string.error_2;
                     break;
-                case "3":
+                case Constants.ERROR_MALFORMED_ACTION_REQUEST:
                     Rid = R.string.error_3;
                     break;
-                case "4":
+                case Constants.ERROR_MISSING_ACTION_PARAMETER:
                     Rid = R.string.error_4;
                     break;
-                case "5":
+                case Constants.ERROR_USERNAME_ALREADY_REGISTERED:
                     Rid = R.string.error_5;
                     break;
-                case "6":
+                case Constants.ERROR_MISSING_MESSAGE:
                     Rid = R.string.error_6;
                     break;
-                case "7":
+                case Constants.ERROR_INVALID_FILTER_TYPE:
                     Rid = R.string.error_7;
                     break;
-                case "8":
+                case Constants.ERROR_INVALID_ACTION:
                     Rid = R.string.error_8;
                     break;
-                case "9":
+                case Constants.ERROR_MISSING_ACTION:
                     Rid = R.string.error_9;
                     break;
-                case "10":
+                case Constants.MAX_PASSWORD_LENGTH:
                     Rid = R.string.error_10;
                     break;
-                case "11":
+                case Constants.ERROR_USERNAME_NOT_REGISTERED:
                     Rid = R.string.error_11;
                     break;
-                case "12":
+                case Constants.MAX_USERNAME_LENGTH:
                     Rid = R.string.error_12;
                     break;
-                case "13":
+                case Constants.ERROR_WRONG_PARAMETER_VALUE:
                     Rid = R.string.error_13;
                     break;
                 default:
@@ -153,6 +163,15 @@ public class ServerTask extends AsyncTask<XMLDataBlock, Void, XMLDataBlock> {
                 serverListener.toDoOnSuccessPostExecute(xmlDataBlock);
             }
         }
+    }
+
+    private void registerRequest(XMLDataBlock xmlDataBlock) {
+        String transactionType = xmlDataBlock.getAttribute("type");
+        transaccion.setResponseType(transactionType);
+        if (transactionType.equals("error")) {
+            transaccion.setErrorCode(xmlDataBlock.getChildBlock("detail").getAttribute("code"));
+        }
+        new MeegosSQLHelper(context).insertTransaccion(transaccion);
     }
 
     /**
