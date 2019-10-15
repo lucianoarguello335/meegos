@@ -20,7 +20,7 @@
     <string-array name="chat_filter">
         <item>All</item>
         <item>Only received</item>
-        <item>Only sended</item>
+        <item>Only sent</item>
     </string-array>
     
 </resources>

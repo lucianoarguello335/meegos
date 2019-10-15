@@ -1,0 +1,84 @@
+<resources>
+    <string name="app_name">Meegos</string>
+    <string name="action_settings" translatable="false">Configuracion</string>
+    <string name="action_account" translatable="false">Cuenta nueva</string>
+    <string name="action_transactions" translatable="false">Transacciones</string>
+
+    <string name="permission_denied">Debes aceptar todos los permisos para usar la app.</string>
+
+    <!--    List options-->
+    <string name="list_no_data">No se encontraron datos</string>
+
+    <string name="title_activity_history_contact_list">Historial de contactos</string>
+    <string name="deleted_success">Borrado exitoso</string>
+    <string name="deleted_failed">No puedes borrar este evento!</string>
+    <string name="chat_contact_list">Chat de meegos</string>
+
+    <!--Log in-->
+    <string name="login_title">Crear cuenta nueva</string>
+    <string name="login_username_hint">Nombre de usuario</string>
+    <string name="login_pass_hint">Contraseña</string>
+    <string name="login_sign_up">Registrarse en meegos</string>
+
+<!--    Alias-->
+    <string name="alias_title">Crear nuevo Alias para contacto</string>
+    <string name="alias_sign_up" translatable="false">Registrar Alias</string>
+    <string name="alias_registered" translatable="false">Alias registrado</string>
+
+    <!--    Chat Errors-->
+    <string name="error_1">Error: XML Malformado</string>
+    <string name="error_2">Error: No se encuentra request id</string>
+    <string name="error_3">Error: Action request malformado</string>
+    <string name="error_4">Error: No se encuentra action parameter</string>
+    <string name="error_5">Error: Nombre de usuario ya registrado</string>
+    <string name="error_6">Error: No se encuentra mensaje</string>
+    <string name="error_7">Error: Filter responseType invalido</string>
+    <string name="error_8">Error: Accion invalida</string>
+    <string name="error_9">Error: No se encuentra action</string>
+    <string name="error_10">Error: Http method invalido</string>
+    <string name="error_11">Error: Nombre de usuario no registrado</string>
+    <string name="error_12">Error: Fallo de autenticacion</string>
+    <string name="error_13">Error: Valor de parametro erroneo</string>
+    <string name="error_default">Error: Codigo de error desconocido</string>
+    <string name="min_alias_length">Longitud minima de alias es 5 caracteres</string>
+    <string name="max_alias_length">Longitud maxima de aliaz es 12 caracteres</string>
+    <string name="min_username_length">Longitud minima de username es 5 caracteres</string>
+    <string name="max_username_length">Longitud maxima de username es 12 caracteres</string>
+    <string name="min_password_length">Longitud minima de contraseña es 6 caracteres</string>
+    <string name="max_password_length">Longitud maxima de contraseña es 10 caracteres</string>
+    <string name="min_message_length">Longitud minima de mensaje es 1 caracteres</string>
+    <string name="max_message_length">Longitud maxima de mensaje es 200 caracteres</string>
+    <string name="server_listener_null">ServerListener no puede ser null</string>
+    <string name="network_not_connected">No hay conexion de red</string>
+
+    <!-- Contact Settings Titles -->
+    <string name="title_activity_settings">Configuracion</string>
+    <string name="title_order">Ordenamiento</string>
+    <string name="title_filter">Filtros</string>
+
+    <!-- Messages Preferences -->
+    <string name="order_by">Ordenar por</string>
+    <string name="criteria">Criterio</string>
+    <string name="filter">Filtrar por</string>
+
+    <!-- Key Preferences -->
+    <string name="filter_call">Llamadas</string>
+    <string name="filter_sms">SMS</string>
+    <string name="filter_has_phone_number">Solo con numero telefonico</string>
+
+    <!-- Notifications Strings -->
+    <string name="notification_message_result_title_error">Error!</string>
+    <string name="notification_message_result_title_success">Exito!</string>
+    <string name="notification_message_result_text_success">El mensaje fue enviado</string>
+    <string name="notification_message_result_text_error">Hubo un error al enviar el mensaje</string>
+    <string name="notification_message_result_ticker_success">:)</string>
+    <string name="notification_message_result_ticker_error">:(</string>
+    <string name="notification_message_received_title">Nuevo mensaje</string>
+    <string name="notification_message_received_ticker">Nuevo mensaje</string>
+    <string name="notification_user_registered_title">Usuario registrado</string>
+    <string name="notification_user_registered_text">Su usuario fue registrado exitosamente</string>
+    <string name="notification_user_registered_ticker">Usuario registrado</string>
+
+<!--    <string name="attachment_summary_on">Automatically download attachments for incoming emails</string>-->
+<!--    <string name="attachment_summary_off">Only download attachments when manually requested</string>-->
+</resources>

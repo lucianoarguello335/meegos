@@ -1,0 +1,26 @@
+<resources>
+
+    <!-- contact list-->
+    <string-array name="contact_order_by">
+        <item>Nombre</item>
+        <item>Apellido</item>
+    </string-array>
+    <string-array name="contact_criteria">
+        <item>Ascendente</item>
+        <item>Descendente</item>
+    </string-array>
+
+    <!-- history list-->
+    <string-array name="history_order">
+        <item>Mas nuevos arriba</item>
+        <item>Mas viejos arriba</item><!-- <item>Los ultimos eventos arriba.</item>-->
+    </string-array>
+
+<!--    chat list-->
+    <string-array name="chat_filter">
+        <item>Todos</item>
+        <item>Solo recibidos</item>
+        <item>Solo enviados</item>
+    </string-array>
+    
+</resources>
