@@ -23,7 +23,7 @@ public class HistoryContactActivity extends AppCompatActivity implements History
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.history_contact_activity);
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.history_contact_toolbar);
         setSupportActionBar(toolbar);
 
 //        FloatingActionButton fab = findViewById(R.id.fab);

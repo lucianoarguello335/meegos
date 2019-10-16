@@ -3,12 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="utn.tdm.meegos.activity.HistoryContactActivity">
     <item
-        android:id="@+id/action_chat222"
-        android:orderInCategory="100"
-        android:title="@string/action_settings"
-        app:showAsAction="always"
-        android:icon="@drawable/baseline_chat_24" />
-    <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"
         android:title="@string/action_settings"

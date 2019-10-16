@@ -17,10 +17,11 @@ import java.net.URL;
 import java.util.Calendar;
 
 import utn.tdm.meegos.R;
-import utn.tdm.meegos.database.MeegosSQLHelper;
 import utn.tdm.meegos.domain.Transaccion;
+import utn.tdm.meegos.manager.TransaccionManager;
 import utn.tdm.meegos.util.Constants;
 import utn.tdm.meegos.util.CustomXMLParser;
+import utn.tdm.meegos.util.DateUtil;
 import utn.tdm.meegos.util.XMLDataBlock;
 
 public class ServerTask extends AsyncTask<XMLDataBlock, Void, XMLDataBlock> {
@@ -57,7 +58,7 @@ public class ServerTask extends AsyncTask<XMLDataBlock, Void, XMLDataBlock> {
 //        Registramos transaccion
         transaccion.setRequestId(requestBodyBlock.getAttribute("id"));
         transaccion.setRequestName(requestBodyBlock.getAttribute("name"));
-        transaccion.setFecha(Calendar.getInstance().getTimeInMillis());
+        transaccion.setTimestamp(DateUtil.getCalendarAsString(Calendar.getInstance(), Constants.CALENDAR_FORMAT_PATTERN));
 
         XMLDataBlock response = new XMLDataBlock("result", null, null);
         try {
@@ -130,13 +131,13 @@ public class ServerTask extends AsyncTask<XMLDataBlock, Void, XMLDataBlock> {
                 case Constants.ERROR_MISSING_ACTION:
                     Rid = R.string.error_9;
                     break;
-                case Constants.MAX_PASSWORD_LENGTH:
+                case Constants.ERROR_INVALID_HTTP_METHOD_REQUESTED:
                     Rid = R.string.error_10;
                     break;
                 case Constants.ERROR_USERNAME_NOT_REGISTERED:
                     Rid = R.string.error_11;
                     break;
-                case Constants.MAX_USERNAME_LENGTH:
+                case Constants.ERROR_AUTHENTICATION_FAIL:
                     Rid = R.string.error_12;
                     break;
                 case Constants.ERROR_WRONG_PARAMETER_VALUE:
@@ -171,7 +172,7 @@ public class ServerTask extends AsyncTask<XMLDataBlock, Void, XMLDataBlock> {
         if (transactionType.equals("error")) {
             transaccion.setErrorCode(xmlDataBlock.getChildBlock("detail").getAttribute("code"));
         }
-        new MeegosSQLHelper(context).insertTransaccion(transaccion);
+        new TransaccionManager(context).saveTransaccion(transaccion);
     }
 
     /**

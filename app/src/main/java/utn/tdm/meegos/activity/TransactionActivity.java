@@ -9,48 +9,32 @@ import androidx.appcompat.widget.Toolbar;
 
 import utn.tdm.meegos.R;
 import utn.tdm.meegos.domain.Evento;
+import utn.tdm.meegos.domain.Transaccion;
 import utn.tdm.meegos.fragment.ChatContactListFragment;
+import utn.tdm.meegos.fragment.TransactionListFragment;
 
-public class TransactionActivity extends AppCompatActivity implements ChatContactListFragment.OnListFragmentInteractionListener {
+public class TransactionActivity extends AppCompatActivity implements TransactionListFragment.TransactionFragmentListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.transaction_activity);
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.transaction_toolbar);
         setSupportActionBar(toolbar);
-
-//        FloatingActionButton fab = findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
-
-
-//        ContactListFragment contactFragment = new ContactListFragment();
-//        FragmentManager fm = getSupportFragmentManager();
-//        FragmentTransaction ft = fm.beginTransaction();
-//        ft.add(contactFragment, "EL SUper TAG");
-//        ft.commit();
-
-
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.history_contact_menu, menu);
-        return true;
+        // getMenuInflater().inflate(R.menu.history_contact_menu, menu);
+        // return true;
+        return super.onCreateOptionsMenu(menu);
     }
 
-
 //Listener del fragment
-
     @Override
-    public void onListFragmentInteraction(Evento evento) {
-        Toast.makeText(this, "onListFragmentInteraction Se elimino el evento " + evento.getId(), Toast.LENGTH_SHORT).show();
+    public void onListFragmentInteraction(Transaccion transaccion) {
+        Toast.makeText(this, "onListFragmentInteraction Se elimino el transaccion " + transaccion.getRequestId(), Toast.LENGTH_SHORT).show();
+
     }
 }

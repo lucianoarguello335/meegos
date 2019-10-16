@@ -83,12 +83,13 @@ public class MeegosNotifications {
          */
     }
 
-    public static void messageReceived(Context context, CharSequence messageText){
+    public static void messageReceived(Context context, CharSequence contentText, CharSequence contentInfo){
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context, meegosChannelId)
                 .setSmallIcon(R.drawable.baseline_sms_black_18)
                 .setLargeIcon(((BitmapDrawable) context.getResources().getDrawable(R.drawable.baseline_sms_black_36)).getBitmap())
                 .setContentTitle(context.getResources().getString(R.string.notification_message_received_title))
-                .setContentText(messageText)
+                .setContentText(contentText)
+                .setContentInfo(contentInfo)
                 .setTicker(context.getResources().getText(R.string.notification_message_received_ticker));
 
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);

@@ -15,11 +15,8 @@ public class MeegosSQLHelper extends SQLiteOpenHelper {
     public static String DB_NAME = "meegosdb";
     public static int CURRENT_DB_VERSION = 1;
 
-    private static SQLiteDatabase db;
-
     public MeegosSQLHelper(Context context) {
         super(context, DB_NAME, null, CURRENT_DB_VERSION);
-        db = getWritableDatabase();
     }
 
     @Override
@@ -30,14 +27,14 @@ public class MeegosSQLHelper extends SQLiteOpenHelper {
         db.execSQL(sqlEventosCreate);
 
         String sqlTransactionsCreate = "Create TABLE Transacciones(_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "request_name TEXT, response_type TEXT, error_code TEXT, fecha INTEGER);";
+                "request_id TEXT, request_name TEXT, response_type TEXT, error_code TEXT, timestamp TEXT);";
         db.execSQL(sqlTransactionsCreate);
 
         String sqlAliasCreate = "Create TABLE Alias(contacto_lookup TEXT, contacto_alias TEXT);";
         db.execSQL(sqlAliasCreate);
 
         String sqlChatCreate = "Create TABLE Chats(_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "timestamp TEXT, toAlias TEXT, fromAlias TEXT, message TEXT);";
+                "timestamp TEXT, fromAlias TEXT, toAlias TEXT, origen INTEGER, message TEXT);";
         db.execSQL(sqlChatCreate);
     }
 
@@ -81,17 +78,6 @@ public class MeegosSQLHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    public int deleteEvento(long id) {
-        db = getWritableDatabase();
-        int outcome = db.delete(
-                "Eventos",
-                "_id=?",
-                new String[]{String.valueOf(id)}
-                );
-        db.close();
-        return outcome;
-    }
-
     /**
      *
      * @param contacto_id int > 0
@@ -105,10 +91,10 @@ public class MeegosSQLHelper extends SQLiteOpenHelper {
             selection += " AND " + selectionArguments;
         }
         arguments = new String[]{
-            String.valueOf(contacto_id)
+                String.valueOf(contacto_id)
         };
 
-        db = getWritableDatabase();
+        SQLiteDatabase db = getWritableDatabase();
         Cursor c = db.query(
                 "Eventos",
                 null,
@@ -119,6 +105,17 @@ public class MeegosSQLHelper extends SQLiteOpenHelper {
                 null
         );
         return c;
+    }
+
+    public int deleteEvento(long id) {
+        SQLiteDatabase db = getWritableDatabase();
+        int outcome = db.delete(
+                "Eventos",
+                "_id=?",
+                new String[]{String.valueOf(id)}
+                );
+        db.close();
+        return outcome;
     }
 
     public void insertAlias(String contactLookupKey, String contactoAlias) {
@@ -132,7 +129,7 @@ public class MeegosSQLHelper extends SQLiteOpenHelper {
     }
 
     public Cursor getAliasByContactLookupKey(String contactLookupKey) {
-        db = getWritableDatabase();
+        SQLiteDatabase db = getWritableDatabase();
         Cursor c = db.query(
                 "Alias",
                 null,
@@ -145,13 +142,13 @@ public class MeegosSQLHelper extends SQLiteOpenHelper {
         return c;
     }
 
-    public void insertTransaccion(Transaccion transaccion) {
+    public void insertTransaccion(String request_id, String request_name, String response_type, String error_code, String timestamp) {
         ContentValues nuevaTransaccion = new ContentValues();
-        nuevaTransaccion.put("request_id", transaccion.getRequestId());
-        nuevaTransaccion.put("request_name", transaccion.getRequestName());
-        nuevaTransaccion.put("response_type", transaccion.getResponseType());
-        nuevaTransaccion.put("error_code", transaccion.getErrorCode());
-        nuevaTransaccion.put("fecha", transaccion.getFecha());
+        nuevaTransaccion.put("request_id", request_id);
+        nuevaTransaccion.put("request_name", request_name);
+        nuevaTransaccion.put("response_type", response_type);
+        nuevaTransaccion.put("error_code", error_code);
+        nuevaTransaccion.put("timestamp", timestamp);
 
         SQLiteDatabase db = getWritableDatabase();
         db.insert("Transacciones", null, nuevaTransaccion);
@@ -159,8 +156,8 @@ public class MeegosSQLHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    public Cursor getAllTransacciones() {
-        db = getWritableDatabase();
+    public Cursor findAllTransacciones() {
+        SQLiteDatabase db = getWritableDatabase();
         Cursor c = db.query(
                 "Transacciones",
                 null,
@@ -173,11 +170,12 @@ public class MeegosSQLHelper extends SQLiteOpenHelper {
         return c;
     }
 
-    public long insertChat(long timestamp, String from, String to, String message) {
+    public long insertChat(String timestamp, String from, String to, int origen, String message) {
         ContentValues nuevaTransaccion = new ContentValues();
         nuevaTransaccion.put("timestamp", timestamp);
-        nuevaTransaccion.put("to", to);
-        nuevaTransaccion.put("from", from);
+        nuevaTransaccion.put("fromAlias", from);
+        nuevaTransaccion.put("toAlias", to);
+        nuevaTransaccion.put("origen", origen);
         nuevaTransaccion.put("message", message);
 
         SQLiteDatabase db = getWritableDatabase();
@@ -187,13 +185,13 @@ public class MeegosSQLHelper extends SQLiteOpenHelper {
         return result;
     }
 
-    public Cursor findChatsByAlias(String selectionArguments){
-        db = getWritableDatabase();
+    public Cursor findChatsByAlias(String alias){
+        SQLiteDatabase db = getWritableDatabase();
         Cursor c = db.query(
                 "Chats",
                 null,
-                selectionArguments,
-                null,
+                "fromAlias = ? OR toAlias = ?",
+                new String[]{alias, alias},
                 null,
                 null,
                 null

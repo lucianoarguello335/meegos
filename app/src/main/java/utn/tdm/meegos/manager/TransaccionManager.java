@@ -8,30 +8,31 @@ import java.util.Comparator;
 
 import utn.tdm.meegos.database.MeegosSQLHelper;
 import utn.tdm.meegos.domain.Chat;
+import utn.tdm.meegos.domain.Transaccion;
 import utn.tdm.meegos.preferences.MeegosPreferences;
 
-public class ChatManager {
+public class TransaccionManager {
 
     private Context context;
     MeegosSQLHelper meegosSQLHelper;
 
-    public ChatManager(Context context) {
+    public TransaccionManager(Context context) {
         this.context = context;
         this.meegosSQLHelper = new MeegosSQLHelper(context);
     }
 
-    public void saveChat(Chat chat) {
-        meegosSQLHelper.insertChat(
-                chat.getTimestamp(),
-                chat.getFrom(),
-                chat.getTo(),
-                chat.getOrigen(),
-                chat.getMessage()
+    public void saveTransaccion(Transaccion transacccion) {
+        meegosSQLHelper.insertTransaccion(
+                transacccion.getRequestId(),
+                transacccion.getRequestName(),
+                transacccion.getResponseType(),
+                transacccion.getErrorCode(),
+                transacccion.getTimestamp()
         );
     }
 
-    public ArrayList<Chat> findChatsByAlias(String alias) {
-        ArrayList<Chat> chats = new ArrayList<>();
+    public ArrayList<Transaccion> findAllTransacciones() {
+        ArrayList<Transaccion> transacciones = new ArrayList<>();
         String selection = "";
         //TODO: Usar PREFERNCES para la busqueda
 //        if (MeegosPreferences.isch HistoryCallFiltered(context)) {
@@ -42,15 +43,15 @@ public class ChatManager {
 //        } else if (MeegosPreferences.isHistorySMSFiltered(context)) {
 //            selection = "tipo_evento = " + Evento.SMS;
 //        }
-        Cursor cursor = meegosSQLHelper.findChatsByAlias(alias);
+        Cursor cursor = meegosSQLHelper.findAllTransacciones();
         while (cursor.moveToNext()) {
-            chats.add(
-                new Chat(
+            transacciones.add(
+                new Transaccion(
                     cursor.getInt(0),
                     cursor.getString(1),
                     cursor.getString(2),
                     cursor.getString(3),
-                    cursor.getInt(4),
+                    cursor.getString(4),
                     cursor.getString(5)
                 )
             );
@@ -59,18 +60,23 @@ public class ChatManager {
 
         // Ordenamos el resultado
         //TODO: Setear el ordenamiento
-        chats.sort(new Comparator<Chat>() {
+        transacciones.sort(new Comparator<Transaccion>() {
             @Override
-            public int compare(Chat c1, Chat c2) {
-                    return c2.getTimestamp().compareTo(c1.getTimestamp());
+            public int compare(Transaccion t1, Transaccion t2) {
+                    return t2.getTimestamp().compareTo(t1.getTimestamp());
 //                if (MeegosPreferences.getHistoryOrder(context).equals("fecha ASC")) {
-//                    return c2.getTimestamp().compareTo(c1.getTimestamp());
+//                    return t2.getTimestamp().compareTo(t1.getTimestamp());
 //                } else {
-//                    return c1.getTimestamp().compareTo(c2.getTimestamp());
+//                    return t1.getTimestamp().compareTo(t2.getTimestamp());
 //                }
             }
         });
 
-        return chats;
+        return transacciones;
+    }
+
+    public Cursor findAllTransaccionesCursor() {
+        Cursor cursor = meegosSQLHelper.findAllTransacciones();
+        return cursor;
     }
 }

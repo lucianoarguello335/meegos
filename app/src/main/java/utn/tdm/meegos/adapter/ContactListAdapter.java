@@ -83,7 +83,7 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
         holder.historyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent =new Intent(view.getContext(), HistoryContactActivity.class);
+                Intent intent = new Intent(view.getContext(), HistoryContactActivity.class);
 
                 Bundle bundle = new Bundle();
                 bundle.putLong("contact_id", contacto.getId());

@@ -70,13 +70,40 @@ public class ContactManager {
         return contactos;
     }
 
-    public Contacto findContactByIdAndLookupKey(Long contact_id, String contact_lookup_key) {
-        ArrayList<Contacto> contactos = new ArrayList<Contacto>();
+    public Contacto findContactByLookupKey(String contactLookupKey) {
+        Contacto contacto = null;
         ContentResolver cr = context.getContentResolver();
-        return null;
+
+        Cursor cursor = cr.query(
+                ContactsContract.Contacts.CONTENT_URI,
+                null,
+                ContactsContract.Contacts.LOOKUP_KEY + " = ?",
+                new String[]{contactLookupKey},
+                null
+        );
+
+        if(cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            /*
+             * Assuming the current Cursor position is the contact you want, gets the thumbnail ID
+             */
+            String thumbnailUri = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.PHOTO_THUMBNAIL_URI));
+            contacto = new Contacto(
+                    cursor.getLong(cursor.getColumnIndex(ContactsContract.Contacts._ID)),
+                    cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.LOOKUP_KEY)),
+                    cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME)),
+                    cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME_ALTERNATIVE)),
+                    "",
+                    (thumbnailUri != null ? loadContactPhotoThumbnail(thumbnailUri) : null)
+            );
+
+            cursor.close();
+        }
+
+        return contacto;
     }
 
-    public Contacto findContactByPhoneNumbre(String phoneNumber) {
+    public Contacto findContactByPhoneNumber(String phoneNumber) {
         Uri lookupUri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(phoneNumber));
         ContentResolver cr = context.getContentResolver();
         Cursor cursor = cr.query(

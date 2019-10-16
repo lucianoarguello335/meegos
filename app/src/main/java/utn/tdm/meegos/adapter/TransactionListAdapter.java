@@ -14,7 +14,9 @@ import java.util.List;
 
 import utn.tdm.meegos.R;
 import utn.tdm.meegos.domain.Evento;
+import utn.tdm.meegos.domain.Transaccion;
 import utn.tdm.meegos.fragment.HistoryContactListFragment.OnListFragmentInteractionListener;
+import utn.tdm.meegos.fragment.TransactionListFragment;
 import utn.tdm.meegos.fragment.dummy.DummyContent.DummyItem;
 import utn.tdm.meegos.listener.OnListEventListener;
 import utn.tdm.meegos.util.Constants;
@@ -28,18 +30,16 @@ import utn.tdm.meegos.util.DateUtil;
 public class TransactionListAdapter extends RecyclerView.Adapter<TransactionListAdapter.ViewHolder> {
 
 //    private final List<DummyItem> mValues;
-    private List<Evento> eventos;
-    private final OnListFragmentInteractionListener mListener;
-    private final OnListEventListener onListEventListener;
+    private List<Transaccion> transacciones;
+    private final TransactionListFragment.TransactionFragmentListener transactionFragmentListener;
 
-    public TransactionListAdapter(List<Evento> eventos, OnListEventListener onListEventListener) {
-        this.eventos = eventos;
-        this.mListener = null;
-        this.onListEventListener = onListEventListener;
+    public TransactionListAdapter(List<Transaccion> transacciones, TransactionListFragment.TransactionFragmentListener transactionFragmentListener) {
+        this.transacciones = transacciones;
+        this.transactionFragmentListener = transactionFragmentListener;
     }
 
-    public void setEventos(List<Evento> eventos) {
-        this.eventos = eventos;
+    public void setTransacciones(List<Transaccion> transacciones) {
+        this.transacciones = transacciones;
     }
 
     @Override
@@ -51,69 +51,50 @@ public class TransactionListAdapter extends RecyclerView.Adapter<TransactionList
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        final Evento evento = eventos.get(position);
+        final Transaccion transaccion = transacciones.get(position);
 
-        if (evento.getTipo() == 1) {
-            holder.tipoEventoImageView.setImageResource(R.drawable.baseline_call_black_48);
-        } else {
-            holder.tipoEventoImageView.setImageResource(R.drawable.baseline_sms_black_48);
-        }
-        holder.tipoEventoImageView.setColorFilter(holder.view.getResources().getColor(R.color.list_tipo_evento,null));
+        holder.name.setText(transaccion.getRequestName());
+        holder.timestamp.setText(transaccion.getTimestamp());
 
-        if (evento.getOrigen() == 1) {
-            holder.origenImageView.setImageResource(R.drawable.baseline_call_received_black_48);
-            holder.origenImageView.setColorFilter(holder.view.getResources().getColor(R.color.colorPrimaryDark,null));
+        if (transaccion.getResponseType().equals("success")) {
+            holder.responseTypeImage.setImageResource(R.drawable.baseline_done_24);
+            holder.responseTypeImage.setColorFilter(holder.view.getResources().getColor(R.color.colorPrimary, null));
         } else {
-            holder.origenImageView.setImageResource(R.drawable.baseline_call_made_black_48);
-            holder.origenImageView.setColorFilter(holder.view.getResources().getColor(R.color.colorAccent,null));
+            holder.responseTypeImage.setImageResource(R.drawable.baseline_close_24);
+            holder.responseTypeImage.setColorFilter(holder.view.getResources().getColor(R.color.colorAccent, null));
         }
 
-        Calendar fecha = Calendar.getInstance();
-        fecha.setTimeInMillis(evento.getFecha());
-
-
-        holder.fechaTextView.setText(DateUtil.getCalendarAsString(fecha, Constants.CALENDAR_FORMAT_PATTERN));
-
-        holder.deleteButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onListEventListener.onDeleteEvent(evento);
-
-                if (null != mListener) {
-                    // Notify the active callbacks interface (the activity, if the
-                    // fragment is attached to one) that an item has been selected.
-//                    mListener.onListFragmentInteraction(holder.mItem);
-                }
-            }
-        });
+        holder.responseType.setText(transaccion.getResponseType());
+        holder.errorCode.setText(transaccion.getErrorCode());
     }
 
     @Override
     public int getItemCount() {
-        return eventos.size();
+        return transacciones.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View view;
-        public final ImageView tipoEventoImageView;
-        public final ImageView origenImageView;
-        public final TextView fechaTextView;
-        public final TextView mContentView;
-        public final ImageButton deleteButton;
+        public final TextView name;
+        public final TextView timestamp;
+        public final ImageView responseTypeImage;
+        public final TextView responseType;
+        public final TextView errorCode;
+//        public final ImageButton deleteButton;
 
         public ViewHolder(View view) {
             super(view);
             this.view = view;
-            tipoEventoImageView = (ImageView) view.findViewById(R.id.tipoEvento);
-            origenImageView = (ImageView) view.findViewById(R.id.origen);
-            fechaTextView = (TextView) view.findViewById(R.id.fecha);
-            mContentView = (TextView) view.findViewById(R.id.content);
-            deleteButton = (ImageButton) view.findViewById(R.id.history_contact_list_deleteButton);
+            name = view.findViewById(R.id.transaction_name);
+            timestamp = view.findViewById(R.id.transaction_timestamp);
+            responseTypeImage = view.findViewById(R.id.transaction_response_type_image);
+            responseType = view.findViewById(R.id.transaction_response_type);
+            errorCode = view.findViewById(R.id.transaction_error_code);
         }
 
         @Override
         public String toString() {
-            return super.toString() + " '" + mContentView.getText() + "'";
+            return super.toString();
         }
     }
 }

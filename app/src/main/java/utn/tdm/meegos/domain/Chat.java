@@ -1,33 +1,48 @@
 package utn.tdm.meegos.domain;
 
 public class Chat {
-    private long id;
-    private long timestamp;
+
+    public static final int ENVIADO = 1;
+    public static final int RECIBIDO = 2;
+
+    private int _id;
+    private String timestamp;
     private String from;
     private String to;
+    private int origen;
     private String message;
 
-    public Chat(long id, long timestamp, String from, String to, String message) {
-        this.id = id;
+    public Chat(int id, String timestamp, String from, String to, int origen, String message) {
+        this._id = id;
         this.timestamp = timestamp;
         this.from = from;
         this.to = to;
+        this.origen = origen;
         this.message = message;
     }
 
-    public long getId() {
-        return id;
+    public Chat(String timestamp, String from, String to, int origen, String message) {
+        this._id = -1;
+        this.timestamp = timestamp;
+        this.from = from;
+        this.to = to;
+        this.origen = origen;
+        this.message = message;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public int getId() {
+        return _id;
     }
 
-    public long getTimestamp() {
+    public void setId(int _id) {
+        this._id = _id;
+    }
+
+    public String getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(long timestamp) {
+    public void setTimestamp(String timestamp) {
         this.timestamp = timestamp;
     }
 
@@ -45,6 +60,14 @@ public class Chat {
 
     public void setTo(String to) {
         this.to = to;
+    }
+
+    public int getOrigen() {
+        return origen;
+    }
+
+    public void setOrigen(int origen) {
+        this.origen = origen;
     }
 
     public String getMessage() {
