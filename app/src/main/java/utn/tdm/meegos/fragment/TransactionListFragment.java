@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -13,53 +12,37 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import utn.tdm.meegos.R;
+import utn.tdm.meegos.adapter.ChatContactListAdapter;
 import utn.tdm.meegos.adapter.HistoryContactListAdapter;
+import utn.tdm.meegos.adapter.TransactionListAdapter;
 import utn.tdm.meegos.domain.Evento;
+import utn.tdm.meegos.domain.Transaccion;
 import utn.tdm.meegos.listener.OnListEventListener;
 import utn.tdm.meegos.manager.EventoManager;
+import utn.tdm.meegos.manager.TransaccionManager;
 
 /**
  * A fragment representing a list of Items.
  * <p/>
- * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
+ * Activities containing this fragment MUST implement the {@link TransactionFragmentListener}
  * interface.
  */
-public class TransactionListFragment extends Fragment implements OnListEventListener {
+public class TransactionListFragment extends Fragment {
 
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
     // TODO: Customize parameters
     private int mColumnCount = 1;
-    private OnListFragmentInteractionListener mListener;
-    private OnListEventListener onListEventListener;
+    private TransactionFragmentListener mListener;
 
-    private EventoManager eventoManager;
-    private HistoryContactListAdapter historyContactListAdapter;
+    private TransaccionManager transaccionManager;
+    private TransactionListAdapter transactionListAdapter;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
     public TransactionListFragment() {
-    }
-
-    // TODO: Customize parameter initialization
-    @SuppressWarnings("unused")
-    public static TransactionListFragment newInstance(int columnCount) {
-        TransactionListFragment fragment = new TransactionListFragment();
-        Bundle args = new Bundle();
-        args.putInt(ARG_COLUMN_COUNT, columnCount);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        if (getArguments() != null) {
-            mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
-        }
     }
 
     @Override
@@ -75,36 +58,16 @@ public class TransactionListFragment extends Fragment implements OnListEventList
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            eventoManager = new EventoManager(getContext());
-            Bundle bundle = getActivity().getIntent().getExtras();
+            transaccionManager = new TransaccionManager(getContext());
 
-            historyContactListAdapter = new HistoryContactListAdapter(
-                    eventoManager.findEventosByContact(
-                            bundle.getLong("contact_id"),
-                            bundle.getString("contact_lookup"),
-                            bundle.getString("contact_nombre")
-                    ),
-                    new OnListEventListener() {
+            transactionListAdapter = new TransactionListAdapter(
+                    transaccionManager.findAllTransacciones(),
+                    new TransactionFragmentListener() {
                         @Override
-                        public void onDeleteEvent(Evento evento) {
-                            // TODO: Hacer un DialogFragment para confirmar operacin
-                            int result = eventoManager.deleteEvento(evento);
-                            Toast.makeText(
-                                    getContext(),
-                                    "Result: " + result,
-                                    Toast.LENGTH_SHORT
-                            ).show();
-                            historyContactListAdapter.setEventos(eventoManager.findEventosByContact(
-                                    evento.getContactoId(),
-                                    evento.getContactoLookup(),
-                                    evento.getContactoNombre()
-                            ));
-                            historyContactListAdapter.notifyDataSetChanged();
-                        }
+                        public void onListFragmentInteraction(Transaccion transaccion) {}
                     }
             );
-
-            recyclerView.setAdapter(historyContactListAdapter);
+            recyclerView.setAdapter(transactionListAdapter);
         }
         return view;
     }
@@ -112,8 +75,8 @@ public class TransactionListFragment extends Fragment implements OnListEventList
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnListFragmentInteractionListener) {
-            mListener = (OnListFragmentInteractionListener) context;
+        if (context instanceof TransactionFragmentListener) {
+            mListener = (TransactionFragmentListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnListFragmentInteractionListener");
@@ -126,11 +89,6 @@ public class TransactionListFragment extends Fragment implements OnListEventList
         mListener = null;
     }
 
-    @Override
-    public void onDeleteEvent(Evento evento) {
-
-    }
-
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -141,8 +99,8 @@ public class TransactionListFragment extends Fragment implements OnListEventList
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnListFragmentInteractionListener {
+    public interface TransactionFragmentListener {
         // TODO: Update argument type and name
-        void onListFragmentInteraction(Evento evento);
+        void onListFragmentInteraction(Transaccion transaccion);
     }
 }

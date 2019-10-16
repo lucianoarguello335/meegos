@@ -2,6 +2,8 @@ package utn.tdm.meegos.domain;
 
 public class Transaccion {
 
+    int _id;
+
     String requestId;
 
     /**
@@ -19,14 +21,31 @@ public class Transaccion {
     /**
      * La fecha se representa en milisegundos.
      */
-    long fecha;
+    String timestamp;
 
     public Transaccion() {
         this.requestId = "";
         this.requestName = "";
         this.responseType = "";
         this.errorCode = "";
-        this.fecha = 0;
+        this.timestamp = "";
+    }
+
+    public Transaccion(int _id, String requestId, String requestName, String responseType, String errorCode, String timestamp) {
+        this._id = _id;
+        this.requestId = requestId;
+        this.requestName = requestName;
+        this.responseType = responseType;
+        this.errorCode = errorCode;
+        this.timestamp = timestamp;
+    }
+
+    public int get_id() {
+        return _id;
+    }
+
+    public void set_id(int _id) {
+        this._id = _id;
     }
 
     public String getRequestId() {
@@ -61,12 +80,12 @@ public class Transaccion {
         this.errorCode = errorCode;
     }
 
-    public long getFecha() {
-        return fecha;
+    public String getTimestamp() {
+        return timestamp;
     }
 
-    public void setFecha(long fecha) {
-        this.fecha = fecha;
+    public void setTimestamp(String timestamp) {
+        this.timestamp = timestamp;
     }
 
     @Override
@@ -76,7 +95,7 @@ public class Transaccion {
                 ", requestName='" + requestName + '\'' +
                 ", responseType='" + responseType + '\'' +
                 ", errorCode='" + errorCode + '\'' +
-                ", fecha=" + fecha +
+                ", timestamp=" + timestamp +
                 '}';
     }
 }
