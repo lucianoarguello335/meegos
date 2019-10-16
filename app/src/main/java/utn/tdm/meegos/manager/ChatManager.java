@@ -20,8 +20,14 @@ public class ChatManager {
         this.meegosSQLHelper = new MeegosSQLHelper(context);
     }
 
-    public void saveChat(long timestamp, String from, String to, String message) {
-        meegosSQLHelper.insertChat(timestamp, to, from, message);
+    public void saveChat(Chat chat) {
+        meegosSQLHelper.insertChat(
+                chat.getTimestamp(),
+                chat.getFrom(),
+                chat.getTo(),
+                chat.getOrigen(),
+                chat.getMessage()
+        );
     }
 
     public ArrayList<Chat> findChatsByAlias(String alias) {
@@ -36,15 +42,16 @@ public class ChatManager {
 //        } else if (MeegosPreferences.isHistorySMSFiltered(context)) {
 //            selection = "tipo_evento = " + Evento.SMS;
 //        }
-        Cursor cursor = meegosSQLHelper.findChatsByAlias("to LIKE '" + alias + "' OR from LIKE '" + alias + "'");
+        Cursor cursor = meegosSQLHelper.findChatsByAlias(alias);
         while (cursor.moveToNext()) {
             chats.add(
                 new Chat(
-                    cursor.getLong(0),
-                    cursor.getLong(1),
+                    cursor.getInt(0),
+                    cursor.getString(1),
                     cursor.getString(2),
                     cursor.getString(3),
-                    cursor.getString(4)
+                    cursor.getInt(4),
+                    cursor.getString(5)
                 )
             );
         }
@@ -55,11 +62,12 @@ public class ChatManager {
         chats.sort(new Comparator<Chat>() {
             @Override
             public int compare(Chat c1, Chat c2) {
-                if (MeegosPreferences.getHistoryOrder(context).equals("fecha ASC")) {
-                    return Long.compare(c2.getTimestamp(), c1.getTimestamp());
-                } else {
-                    return Long.compare(c1.getTimestamp(), c2.getTimestamp());
-                }
+                    return c2.getTimestamp().compareTo(c1.getTimestamp());
+//                if (MeegosPreferences.getHistoryOrder(context).equals("fecha ASC")) {
+//                    return c2.getTimestamp().compareTo(c1.getTimestamp());
+//                } else {
+//                    return c1.getTimestamp().compareTo(c2.getTimestamp());
+//                }
             }
         });
 

@@ -9,111 +9,107 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.snackbar.Snackbar;
+
 import java.util.Calendar;
 import java.util.List;
 
 import utn.tdm.meegos.R;
-import utn.tdm.meegos.domain.Evento;
-import utn.tdm.meegos.fragment.HistoryContactListFragment.OnListFragmentInteractionListener;
+import utn.tdm.meegos.domain.Chat;
+import utn.tdm.meegos.domain.Contacto;
+import utn.tdm.meegos.fragment.ChatContactListFragment.ChatFragmentInteractionListener;
 import utn.tdm.meegos.fragment.dummy.DummyContent.DummyItem;
 import utn.tdm.meegos.listener.OnListEventListener;
+import utn.tdm.meegos.manager.ChatManager;
+import utn.tdm.meegos.manager.ContactManager;
 import utn.tdm.meegos.util.Constants;
 import utn.tdm.meegos.util.DateUtil;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link DummyItem} and makes a call to the
- * specified {@link OnListFragmentInteractionListener}.
+ * specified {@link ChatFragmentInteractionListener}.
  * TODO: Replace the implementation with code for your data type.
  */
 public class ChatContactListAdapter extends RecyclerView.Adapter<ChatContactListAdapter.ViewHolder> {
 
-//    private final List<DummyItem> mValues;
-    private List<Evento> eventos;
-    private final OnListFragmentInteractionListener mListener;
-    private final OnListEventListener onListEventListener;
+    private List<Chat> chats;
+    private final ChatFragmentInteractionListener mListener;
+    private Contacto contacto;
 
-    public ChatContactListAdapter(List<Evento> eventos, OnListEventListener onListEventListener) {
-        this.eventos = eventos;
-        this.mListener = null;
-        this.onListEventListener = onListEventListener;
+    public ChatContactListAdapter(Contacto contacto, List<Chat> chats, ChatFragmentInteractionListener mListener) {
+        this.contacto = contacto;
+        this.chats = chats;
+        this.mListener = mListener;
     }
 
-    public void setEventos(List<Evento> eventos) {
-        this.eventos = eventos;
+    public void setChats(List<Chat> chats) {
+        this.chats = chats;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return chats.get(position).getOrigen();
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.history_contact_list_item_fragment, parent, false);
+        View view;
+        LayoutInflater layout = LayoutInflater.from(parent.getContext());
+        if (viewType == Chat.ENVIADO) {
+            view = layout.inflate(R.layout.chat_sent_item_fragment, parent, false);
+        } else {
+            view = layout.inflate(R.layout.chat_received_item_fragment, parent, false);
+        }
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        final Evento evento = eventos.get(position);
+        final Chat chat = chats.get(position);
 
-        if (evento.getTipo() == 1) {
-            holder.tipoEventoImageView.setImageResource(R.drawable.baseline_call_black_48);
-        } else {
-            holder.tipoEventoImageView.setImageResource(R.drawable.baseline_sms_black_48);
-        }
-        holder.tipoEventoImageView.setColorFilter(holder.view.getResources().getColor(R.color.list_tipo_evento,null));
+        holder.imageProfile.setImageBitmap(contacto.getPhotoThumbnail());
 
-        if (evento.getOrigen() == 1) {
-            holder.origenImageView.setImageResource(R.drawable.baseline_call_received_black_48);
-            holder.origenImageView.setColorFilter(holder.view.getResources().getColor(R.color.colorPrimaryDark,null));
-        } else {
-            holder.origenImageView.setImageResource(R.drawable.baseline_call_made_black_48);
-            holder.origenImageView.setColorFilter(holder.view.getResources().getColor(R.color.colorAccent,null));
-        }
+        holder.from.setText(chat.getFrom());
+        holder.texto.setText(chat.getMessage());
+        holder.timestamp.setText(chat.getTimestamp());
 
-        Calendar fecha = Calendar.getInstance();
-        fecha.setTimeInMillis(evento.getFecha());
-
-
-        holder.fechaTextView.setText(DateUtil.getCalendarAsString(fecha, Constants.CALENDAR_FORMAT_PATTERN));
-
-        holder.deleteButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onListEventListener.onDeleteEvent(evento);
-
-                if (null != mListener) {
-                    // Notify the active callbacks interface (the activity, if the
-                    // fragment is attached to one) that an item has been selected.
-//                    mListener.onListFragmentInteraction(holder.mItem);
-                }
-            }
-        });
+//        holder.deleteButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Snackbar.make(v, "ESTE TEXTO ES AL ALIMINAR CHAT", Snackbar.LENGTH_LONG).show();
+////                onListEventListener.onDeleteEvent(chat);
+//
+//                if (null != mListener) {
+//                    // Notify the active callbacks interface (the activity, if the
+//                    // fragment is attached to one) that an item has been selected.
+////                    mListener.onListFragmentInteraction(holder.mItem);
+//                }
+//            }
+//        });
     }
 
     @Override
     public int getItemCount() {
-        return eventos.size();
+        return chats.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View view;
-        public final ImageView tipoEventoImageView;
-        public final ImageView origenImageView;
-        public final TextView fechaTextView;
-        public final TextView mContentView;
+
+        public final ImageView imageProfile;
+        public final TextView from;
+        public final TextView texto;
+        public final TextView timestamp;
         public final ImageButton deleteButton;
 
         public ViewHolder(View view) {
             super(view);
             this.view = view;
-            tipoEventoImageView = (ImageView) view.findViewById(R.id.tipoEvento);
-            origenImageView = (ImageView) view.findViewById(R.id.origen);
-            fechaTextView = (TextView) view.findViewById(R.id.fecha);
-            mContentView = (TextView) view.findViewById(R.id.content);
-            deleteButton = (ImageButton) view.findViewById(R.id.history_contact_list_deleteButton);
-        }
-
-        @Override
-        public String toString() {
-            return super.toString() + " '" + mContentView.getText() + "'";
+            imageProfile = view.findViewById(R.id.chat_image_profile);
+            from = view.findViewById(R.id.chat_from);
+            texto = view.findViewById(R.id.chat_texto);
+            timestamp = view.findViewById(R.id.chat_timestamp);
+            deleteButton = null;
         }
     }
 }

@@ -12,26 +12,27 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
 import utn.tdm.meegos.R;
+import utn.tdm.meegos.domain.Chat;
 import utn.tdm.meegos.domain.Evento;
 import utn.tdm.meegos.fragment.ChatContactListFragment;
 
-public class ChatContactActivity extends AppCompatActivity implements ChatContactListFragment.OnListFragmentInteractionListener {
+public class ChatContactActivity extends AppCompatActivity implements ChatContactListFragment.ChatFragmentInteractionListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.chat_contact_activity);
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.chat_contact_toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+//        FloatingActionButton fab = findViewById(R.id.fab);
+//        fab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
+//            }
+//        });
 
 
 //        ContactListFragment contactFragment = new ContactListFragment();
@@ -50,11 +51,9 @@ public class ChatContactActivity extends AppCompatActivity implements ChatContac
         return true;
     }
 
-
 //Listener del fragment
-
     @Override
-    public void onListFragmentInteraction(Evento evento) {
-        Toast.makeText(this, "onListFragmentInteraction Se elimino el evento " + evento.getId(), Toast.LENGTH_SHORT).show();
+    public void onChatDelete(Chat chat) {
+        Toast.makeText(this, "onListFragmentInteraction Se elimino el evento " + chat.getId(), Toast.LENGTH_SHORT).show();
     }
 }
