@@ -5,12 +5,17 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.widget.Toast;
 
+import java.util.Date;
 import java.util.Vector;
 import java.util.function.Consumer;
 
+import utn.tdm.meegos.domain.Chat;
 import utn.tdm.meegos.manager.ChatManager;
+import utn.tdm.meegos.notifications.MeegosNotifications;
 import utn.tdm.meegos.task.ServerTask;
 import utn.tdm.meegos.preferences.MeegosPreferences;
+import utn.tdm.meegos.util.Constants;
+import utn.tdm.meegos.util.DateUtil;
 import utn.tdm.meegos.util.XMLDataBlock;
 import utn.tdm.meegos.util.XMLUtil;
 
@@ -31,27 +36,31 @@ public class MessageService extends Service {
                         Vector<XMLDataBlock> messagesListBlock = responseXMLDataBlock.getChildBlock("messages-list").getChildBlocks("message");
 
 //                        Si hay mensajes
-                        if (messagesListBlock.size() > 0) {
+                        if (messagesListBlock != null && messagesListBlock.size() > 0) {
+                            final StringBuilder receivedMessages = new StringBuilder("");
                             messagesListBlock.forEach(new Consumer<XMLDataBlock>() {
                                 @Override
                                 public void accept(XMLDataBlock xmlDataBlock) {
-                                    String timestamp = xmlDataBlock.getAttribute("timestamp"),
-                                            from = xmlDataBlock.getAttribute("from"),
-                                            message = xmlDataBlock.getText();
-                                    new ChatManager(getApplicationContext()).saveChat(
-                                        Long.parseLong(timestamp),
-                                        from,
-                                        MeegosPreferences.getUsername(getApplicationContext()),
-                                        message
+                                    Chat chat = new Chat(
+                                            xmlDataBlock.getAttribute("timestamp"),
+                                            xmlDataBlock.getAttribute("from"),
+                                            MeegosPreferences.getUsername(getApplicationContext()),
+                                            Chat.RECIBIDO,
+                                            xmlDataBlock.getText()
                                     );
-                                    Toast.makeText(getApplicationContext(), "LLEGO EL SERVICE", Toast.LENGTH_LONG).show();
+                                    new ChatManager(getApplicationContext()).saveChat(chat);
+                                    receivedMessages.append(chat.getFrom()).append(": ").append(chat.getMessage()).append("\n");
+                                    MeegosNotifications.messageReceived(
+                                            getApplicationContext(),
+                                            receivedMessages,
+                                            new StringBuilder("informacion")
+                                    );
                                 }
                             });
-                            // TODO: Notificar mensajes nuevos
                         }
                     }
                 }
-            });
+            }).execute(requestBodyBlock);
         }
         return START_NOT_STICKY;
     }
