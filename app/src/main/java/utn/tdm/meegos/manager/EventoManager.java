@@ -42,8 +42,8 @@ public class EventoManager {
         );
 
         while (cursor.moveToNext()) {
-            String phone_numbre = cursor.getString(cursor.getColumnIndex(CallLog.Calls.NUMBER));
-            Contacto contacto = contactManager.findContactByPhoneNumbre(phone_numbre);
+            String phone_number = cursor.getString(cursor.getColumnIndex(CallLog.Calls.NUMBER));
+            Contacto contacto = contactManager.findContactByPhoneNumber(phone_number);
             if (contacto != null) {
                 eventos.add(
                         new Evento(
@@ -53,7 +53,7 @@ public class EventoManager {
                                 contacto.getId(),
                                 contacto.getLookupKey(),
                                 contacto.getNombre(),
-                                phone_numbre,
+                                phone_number,
                                 Evento.SALIENTE,
                                 ""
                         )
@@ -78,7 +78,7 @@ public class EventoManager {
 
         while (cursor.moveToNext()) {
             String phone_number = cursor.getString(cursor.getColumnIndex(Telephony.Sms.Sent.ADDRESS));
-            Contacto contacto = contactManager.findContactByPhoneNumbre(phone_number);
+            Contacto contacto = contactManager.findContactByPhoneNumber(phone_number);
             if (contacto != null && contacto.getId() == contactoId) {
                 eventos.add(
                         new Evento(

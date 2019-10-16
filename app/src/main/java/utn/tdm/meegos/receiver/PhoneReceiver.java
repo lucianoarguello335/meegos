@@ -30,7 +30,7 @@ public class PhoneReceiver extends BroadcastReceiver {
                 if (extras.getString(TelephonyManager.EXTRA_STATE).equals(TelephonyManager.EXTRA_STATE_RINGING)) {
                     String phoneNumber = extras.getString(TelephonyManager.EXTRA_INCOMING_NUMBER);
                     if (phoneNumber != null) {
-                        Contacto contacto = contactManager.findContactByPhoneNumbre(phoneNumber);
+                        Contacto contacto = contactManager.findContactByPhoneNumber(phoneNumber);
                         if(contacto != null){
                             db.insertEvento(
                                     Evento.LLAMADA,

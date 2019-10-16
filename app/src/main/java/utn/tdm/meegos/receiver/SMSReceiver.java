@@ -41,7 +41,7 @@ public class SMSReceiver extends BroadcastReceiver {
                     phoneNumber = pduMessage[i].getOriginatingAddress();
                 }
 
-                Contacto contacto = contactManager.findContactByPhoneNumbre(phoneNumber);
+                Contacto contacto = contactManager.findContactByPhoneNumber(phoneNumber);
 
                 if(contacto != null){
                     db.insertEvento(
