@@ -1,6 +1,7 @@
 package utn.tdm.meegos.activity;
 
 import android.Manifest;
+import android.app.AliasActivity;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
@@ -24,10 +25,12 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import utn.tdm.meegos.R;
+import utn.tdm.meegos.domain.Chat;
 import utn.tdm.meegos.domain.Contacto;
 import utn.tdm.meegos.fragment.AliasFragment;
 import utn.tdm.meegos.fragment.ContactListFragment;
 import utn.tdm.meegos.fragment.LogInFragment;
+import utn.tdm.meegos.manager.ChatManager;
 import utn.tdm.meegos.preferences.MeegosPreferences;
 import utn.tdm.meegos.receiver.NetworkStatusReceiver;
 import utn.tdm.meegos.service.MessageService;
@@ -73,7 +76,7 @@ public class ContactActivity extends AppCompatActivity implements ContactListFra
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.contact_activity);
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.contact_toolbar);
         setSupportActionBar(toolbar);
         ActivityCompat.requestPermissions(this, ContactActivity.MEEGOS_PERMISOS, 1);
 
@@ -89,8 +92,9 @@ public class ContactActivity extends AppCompatActivity implements ContactListFra
         getApplicationContext().registerReceiver(new NetworkStatusReceiver(), intentFilter);
 
         // TODO: ELIMINAR
-        MeegosPreferences.setUsername(this, "poipoi");
+        MeegosPreferences.setUsername(this, "ezeeze");
         MeegosPreferences.setPassword(this, "123456");
+        MeegosPreferences.setTimestamp(this, 0L);
 
 //        Corremos el servicio para obtener los mensajes web
         runMessageService();
@@ -103,7 +107,7 @@ public class ContactActivity extends AppCompatActivity implements ContactListFra
             public void run() {
                 startService(new Intent(getApplicationContext(), MessageService.class));
             }
-        }, 0, 15000);
+        }, 0, 30000);
     }
 
     @Override
@@ -146,9 +150,12 @@ public class ContactActivity extends AppCompatActivity implements ContactListFra
             if (!username.isEmpty()) {
 //                Nos fijamos si el contacto tiene un alias
                 if (!contacto.getAlias().isEmpty()) {
-//                    TODO: IR al CHAT
-//                    startActivity(new Intent(this, ChatContactActivity.class));
-                    Snackbar.make(view, "IR AL CHAT", Snackbar.LENGTH_LONG).show();
+                    Bundle bundle = new Bundle();
+                    bundle.putString("alias", contacto.getAlias());
+                    bundle.putString("lookupKey", contacto.getLookupKey());
+                    Intent intent = new Intent(this, ChatContactActivity.class);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
                 } else {
 //                    El contacto no tiene un alias
                     AliasFragment af = new AliasFragment();
