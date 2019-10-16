@@ -1,5 +1,6 @@
 package utn.tdm.meegos.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -15,6 +16,7 @@ import androidx.fragment.app.DialogFragment;
 import com.google.android.material.textfield.TextInputLayout;
 
 import utn.tdm.meegos.R;
+import utn.tdm.meegos.activity.ChatContactActivity;
 import utn.tdm.meegos.database.MeegosSQLHelper;
 
 public class AliasFragment extends DialogFragment {
@@ -71,6 +73,12 @@ public class AliasFragment extends DialogFragment {
                     Toast.makeText(getActivity(), R.string.alias_registered, Toast.LENGTH_LONG).show();
 
                     // TODO: IR al chat.
+                    Bundle bundle = new Bundle();
+                    bundle.putString("alias", alias);
+                    bundle.putString("lookupKey", contactoLookup);
+                    Intent intent = new Intent(getContext(), ChatContactActivity.class);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
                 }
             }
         });
