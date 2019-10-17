@@ -87,7 +87,7 @@ public class MeegosSQLHelper extends SQLiteOpenHelper {
         String selection = "contacto_id=?";
         String[] arguments;
 
-        if(selectionArguments != null || !selectionArguments.isEmpty()) {
+        if(selectionArguments != null && !selectionArguments.isEmpty()) {
             selection += " AND " + selectionArguments;
         }
         arguments = new String[]{
@@ -185,17 +185,28 @@ public class MeegosSQLHelper extends SQLiteOpenHelper {
         return result;
     }
 
-    public Cursor findChatsByAlias(String alias){
+    public Cursor findChats(String selection, String[] arguments, String orderBy) {
         SQLiteDatabase db = getWritableDatabase();
         Cursor c = db.query(
                 "Chats",
                 null,
-                "fromAlias = ? OR toAlias = ?",
-                new String[]{alias, alias},
+                selection,
+                arguments,
                 null,
                 null,
-                null
+                orderBy
         );
         return c;
+    }
+
+    public int deleteChat(int id) {
+        SQLiteDatabase db = getWritableDatabase();
+        int outcome = db.delete(
+                "Chats",
+                "_id=?",
+                new String[]{String.valueOf(id)}
+        );
+        db.close();
+        return outcome;
     }
 }
