@@ -4,8 +4,8 @@
 
         <ListPreference
             app:defaultValue="reply"
-            app:entries="@array/history_order"
-            app:entryValues="@array/history_order_values"
+            app:entries="@array/chat_order"
+            app:entryValues="@array/chat_order_values"
             app:key="preference_chat_order"
             app:title="@string/order_by"
             app:useSimpleSummaryProvider="true" />
@@ -13,16 +13,16 @@
     </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/title_filter">
-
-        <SwitchPreferenceCompat
-            app:defaultValue="true"
-            app:key="preference_chat_receiver_filtered"
-            app:title="@string/filter_call" />
-
+        
         <SwitchPreferenceCompat
             app:defaultValue="true"
             app:key="preference_chat_sent_filtered"
-            app:title="@string/filter_sms" />
+            app:title="@string/filter_sent" />
+
+        <SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:key="preference_chat_received_filtered"
+            app:title="@string/filter_received" />
 
 <!--        <SwitchPreferenceCompat-->
 <!--            app:dependency="sync"-->

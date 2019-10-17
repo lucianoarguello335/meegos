@@ -3,39 +3,22 @@ package utn.tdm.meegos.adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.Calendar;
 import java.util.List;
 
 import utn.tdm.meegos.R;
-import utn.tdm.meegos.domain.Evento;
 import utn.tdm.meegos.domain.Transaccion;
-import utn.tdm.meegos.fragment.HistoryContactListFragment.OnListFragmentInteractionListener;
-import utn.tdm.meegos.fragment.TransactionListFragment;
-import utn.tdm.meegos.fragment.dummy.DummyContent.DummyItem;
-import utn.tdm.meegos.listener.OnListEventListener;
-import utn.tdm.meegos.util.Constants;
-import utn.tdm.meegos.util.DateUtil;
 
-/**
- * {@link RecyclerView.Adapter} that can display a {@link DummyItem} and makes a call to the
- * specified {@link OnListFragmentInteractionListener}.
- * TODO: Replace the implementation with code for your data type.
- */
 public class TransactionListAdapter extends RecyclerView.Adapter<TransactionListAdapter.ViewHolder> {
 
-//    private final List<DummyItem> mValues;
     private List<Transaccion> transacciones;
-    private final TransactionListFragment.TransactionFragmentListener transactionFragmentListener;
 
-    public TransactionListAdapter(List<Transaccion> transacciones, TransactionListFragment.TransactionFragmentListener transactionFragmentListener) {
+    public TransactionListAdapter(List<Transaccion> transacciones) {
         this.transacciones = transacciones;
-        this.transactionFragmentListener = transactionFragmentListener;
     }
 
     public void setTransacciones(List<Transaccion> transacciones) {

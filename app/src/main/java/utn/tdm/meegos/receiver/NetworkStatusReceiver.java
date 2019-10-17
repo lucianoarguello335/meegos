@@ -24,7 +24,6 @@ public class NetworkStatusReceiver extends BroadcastReceiver {
             MeegosPreferences.setNetworkStatus(context, "1");
         } else {
             MeegosPreferences.setNetworkStatus(context, "0");
-            // TODO: ANDRES - cambiar el icono del chat.
         }
     }
 }

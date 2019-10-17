@@ -38,6 +38,18 @@ public class MeegosPreferences {
         return getPrefs(context).getBoolean("preference_history_sms_filtered", true);
     }
 
+    public static String getChatOrder(Context context) {
+        return getPrefs(context).getString("preference_chat_order", "_id ASC");
+    }
+
+    public static Boolean isChatSentFiltered(Context context) {
+        return getPrefs(context).getBoolean("preference_chat_sent_filtered", true);
+    }
+
+    public static Boolean isChatReceivedFiltered(Context context) {
+        return getPrefs(context).getBoolean("preference_chat_received_filtered", true);
+    }
+
     public static String getNetworkStatus(Context context) {
         return getPrefs(context).getString("current_network_status", "-1");
     }

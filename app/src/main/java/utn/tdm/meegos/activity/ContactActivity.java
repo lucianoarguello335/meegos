@@ -94,7 +94,7 @@ public class ContactActivity extends AppCompatActivity implements ContactListFra
         // TODO: ELIMINAR
         MeegosPreferences.setUsername(this, "ezeeze");
         MeegosPreferences.setPassword(this, "123456");
-        MeegosPreferences.setTimestamp(this, 0L);
+//        MeegosPreferences.setTimestamp(this, 0L);
 
 //        Corremos el servicio para obtener los mensajes web
         runMessageService();

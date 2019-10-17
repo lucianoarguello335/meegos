@@ -6,7 +6,6 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -15,27 +14,17 @@ import java.util.List;
 
 import utn.tdm.meegos.R;
 import utn.tdm.meegos.domain.Evento;
-import utn.tdm.meegos.fragment.HistoryContactListFragment.OnListFragmentInteractionListener;
-import utn.tdm.meegos.fragment.dummy.DummyContent.DummyItem;
 import utn.tdm.meegos.listener.OnListEventListener;
 import utn.tdm.meegos.util.Constants;
 import utn.tdm.meegos.util.DateUtil;
 
-/**
- * {@link RecyclerView.Adapter} that can display a {@link DummyItem} and makes a call to the
- * specified {@link OnListFragmentInteractionListener}.
- * TODO: Replace the implementation with code for your data type.
- */
 public class HistoryContactListAdapter extends RecyclerView.Adapter<HistoryContactListAdapter.ViewHolder> {
 
-//    private final List<DummyItem> mValues;
     private List<Evento> eventos;
-    private final OnListFragmentInteractionListener mListener;
     private final OnListEventListener onListEventListener;
 
     public HistoryContactListAdapter(List<Evento> eventos, OnListEventListener onListEventListener) {
         this.eventos = eventos;
-        this.mListener = null;
         this.onListEventListener = onListEventListener;
     }
 
@@ -78,12 +67,6 @@ public class HistoryContactListAdapter extends RecyclerView.Adapter<HistoryConta
             @Override
             public void onClick(View v) {
                 onListEventListener.onDeleteEvent(evento);
-
-                if (null != mListener) {
-                    // Notify the active callbacks interface (the activity, if the
-                    // fragment is attached to one) that an item has been selected.
-//                    mListener.onListFragmentInteraction(holder.mItem);
-                }
             }
         });
     }

@@ -33,44 +33,45 @@ public class ChatManager {
     public ArrayList<Chat> findChatsByAlias(String alias) {
         ArrayList<Chat> chats = new ArrayList<>();
         String selection = "";
-        //TODO: Usar PREFERNCES para la busqueda
-//        if (MeegosPreferences.isch HistoryCallFiltered(context)) {
-//            selection = "tipo_evento = " + Evento.LLAMADA;
-//            if (MeegosPreferences.isHistorySMSFiltered(context)) {
-//                selection += " OR tipo_evento = " + Evento.SMS;
-//            }
-//        } else if (MeegosPreferences.isHistorySMSFiltered(context)) {
-//            selection = "tipo_evento = " + Evento.SMS;
-//        }
-        Cursor cursor = meegosSQLHelper.findChatsByAlias(alias);
-        while (cursor.moveToNext()) {
-            chats.add(
-                new Chat(
-                    cursor.getInt(0),
-                    cursor.getString(1),
-                    cursor.getString(2),
-                    cursor.getString(3),
-                    cursor.getInt(4),
-                    cursor.getString(5)
-                )
-            );
-        }
-        cursor.close();
+        String[] arguments = new String[]{};
 
-        // Ordenamos el resultado
-        //TODO: Setear el ordenamiento
-        chats.sort(new Comparator<Chat>() {
-            @Override
-            public int compare(Chat c1, Chat c2) {
-                    return c2.getTimestamp().compareTo(c1.getTimestamp());
-//                if (MeegosPreferences.getHistoryOrder(context).equals("fecha ASC")) {
-//                    return c2.getTimestamp().compareTo(c1.getTimestamp());
-//                } else {
-//                    return c1.getTimestamp().compareTo(c2.getTimestamp());
-//                }
+//        Filtro por las preferencias
+        if (MeegosPreferences.isChatSentFiltered(context)) {
+            selection = "toAlias = ?";
+            arguments = new String[]{alias};
+            if (MeegosPreferences.isChatReceivedFiltered(context)){
+                selection += " OR fromAlias = ?";
+                arguments = new String[]{alias, alias};
             }
-        });
+        } else if (MeegosPreferences.isChatReceivedFiltered(context)) {
+            selection = "fromAlias = ?";
+            arguments = new String[]{alias};
+        }
 
+        if (!selection.isEmpty()) {
+            Cursor cursor = meegosSQLHelper.findChats(
+                    selection,
+                    arguments,
+                    MeegosPreferences.getChatOrder(context)
+            );
+            while (cursor.moveToNext()) {
+                chats.add(
+                        new Chat(
+                                cursor.getInt(0),
+                                cursor.getString(1),
+                                cursor.getString(2),
+                                cursor.getString(3),
+                                cursor.getInt(4),
+                                cursor.getString(5)
+                        )
+                );
+            }
+            cursor.close();
+        }
         return chats;
+    }
+
+    public int deleteChat(Chat chat) {
+        return meegosSQLHelper.deleteChat(chat.getId());
     }
 }

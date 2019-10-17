@@ -2,22 +2,16 @@ package utn.tdm.meegos.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.Toast;
-
 import utn.tdm.meegos.R;
-import utn.tdm.meegos.domain.Evento;
-import utn.tdm.meegos.fragment.ContactListFragment;
-import utn.tdm.meegos.fragment.HistoryContactListFragment;
-import utn.tdm.meegos.fragment.dummy.DummyContent;
 
-public class HistoryContactActivity extends AppCompatActivity implements HistoryContactListFragment.OnListFragmentInteractionListener {
+public class HistoryContactActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,24 +19,6 @@ public class HistoryContactActivity extends AppCompatActivity implements History
         setContentView(R.layout.history_contact_activity);
         Toolbar toolbar = findViewById(R.id.history_contact_toolbar);
         setSupportActionBar(toolbar);
-
-//        FloatingActionButton fab = findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
-
-
-//        ContactListFragment contactFragment = new ContactListFragment();
-//        FragmentManager fm = getSupportFragmentManager();
-//        FragmentTransaction ft = fm.beginTransaction();
-//        ft.add(contactFragment, "EL SUper TAG");
-//        ft.commit();
-
-
     }
 
     @Override
@@ -68,12 +44,5 @@ public class HistoryContactActivity extends AppCompatActivity implements History
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
-
-    //Listener del fragment
-
-    @Override
-    public void onListFragmentInteraction(Evento evento) {
-        Toast.makeText(this, "onListFragmentInteraction Se elimino el evento " + evento.getId(), Toast.LENGTH_SHORT).show();
     }
 }

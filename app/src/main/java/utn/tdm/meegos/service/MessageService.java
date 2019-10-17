@@ -29,7 +29,6 @@ public class MessageService extends Service {
                 public void toDoOnSuccessPostExecute(XMLDataBlock responseXMLDataBlock) {
                     if (responseXMLDataBlock.getAttribute("type").equals("success")) {
 //                        Actualizamos el Timestamp para la proxima busqueda
-//                        TODO: Actualizamos el Timestamp para la proxima busqueda
                          MeegosPreferences.setTimestamp(getApplicationContext(), Long.parseLong(responseXMLDataBlock.getAttribute("id")));
 
 //                         Buscamos la lista de mensajes

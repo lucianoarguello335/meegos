@@ -9,37 +9,23 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.snackbar.Snackbar;
-
-import java.util.Calendar;
 import java.util.List;
 
 import utn.tdm.meegos.R;
 import utn.tdm.meegos.domain.Chat;
 import utn.tdm.meegos.domain.Contacto;
-import utn.tdm.meegos.fragment.ChatContactListFragment.ChatFragmentInteractionListener;
-import utn.tdm.meegos.fragment.dummy.DummyContent.DummyItem;
-import utn.tdm.meegos.listener.OnListEventListener;
-import utn.tdm.meegos.manager.ChatManager;
-import utn.tdm.meegos.manager.ContactManager;
-import utn.tdm.meegos.util.Constants;
-import utn.tdm.meegos.util.DateUtil;
+import utn.tdm.meegos.listener.ChatListener;
 
-/**
- * {@link RecyclerView.Adapter} that can display a {@link DummyItem} and makes a call to the
- * specified {@link ChatFragmentInteractionListener}.
- * TODO: Replace the implementation with code for your data type.
- */
 public class ChatContactListAdapter extends RecyclerView.Adapter<ChatContactListAdapter.ViewHolder> {
 
     private List<Chat> chats;
-    private final ChatFragmentInteractionListener mListener;
+    private final ChatListener chatListener;
     private Contacto contacto;
 
-    public ChatContactListAdapter(Contacto contacto, List<Chat> chats, ChatFragmentInteractionListener mListener) {
+    public ChatContactListAdapter(Contacto contacto, List<Chat> chats, ChatListener chatListener) {
         this.contacto = contacto;
         this.chats = chats;
-        this.mListener = mListener;
+        this.chatListener = chatListener;
     }
 
     public void setChats(List<Chat> chats) {
@@ -67,25 +53,19 @@ public class ChatContactListAdapter extends RecyclerView.Adapter<ChatContactList
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         final Chat chat = chats.get(position);
 
-        holder.imageProfile.setImageBitmap(contacto.getPhotoThumbnail());
-
-        holder.from.setText(chat.getFrom());
+        if (chat.getOrigen() == Chat.RECIBIDO) {
+            holder.imageProfile.setImageBitmap(contacto.getPhotoThumbnail());
+        }
+        //holder.from.setText(chat.getFrom());
         holder.texto.setText(chat.getMessage());
         holder.timestamp.setText(chat.getTimestamp());
 
-//        holder.deleteButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Snackbar.make(v, "ESTE TEXTO ES AL ALIMINAR CHAT", Snackbar.LENGTH_LONG).show();
-////                onListEventListener.onDeleteEvent(chat);
-//
-//                if (null != mListener) {
-//                    // Notify the active callbacks interface (the activity, if the
-//                    // fragment is attached to one) that an item has been selected.
-////                    mListener.onListFragmentInteraction(holder.mItem);
-//                }
-//            }
-//        });
+        holder.deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                chatListener.onChatDelete(chat);
+            }
+        });
     }
 
     @Override
@@ -106,10 +86,10 @@ public class ChatContactListAdapter extends RecyclerView.Adapter<ChatContactList
             super(view);
             this.view = view;
             imageProfile = view.findViewById(R.id.chat_image_profile);
-            from = view.findViewById(R.id.chat_from);
+            from = null; //view.findViewById(R.id.chat_from);
             texto = view.findViewById(R.id.chat_texto);
             timestamp = view.findViewById(R.id.chat_timestamp);
-            deleteButton = null;
+            deleteButton = view.findViewById(R.id.chat_deleteButton);
         }
     }
 }

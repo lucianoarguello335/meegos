@@ -111,44 +111,45 @@ public class EventoManager {
         }
 
         ArrayList<Evento> eventos = new ArrayList<>();
-        Cursor cursor = meegosSQLHelper.getEventos(contactId, selection);
-        while (cursor.moveToNext()) {
-            eventos.add(
-                    new Evento(
-                            cursor.getLong(0),
-                            cursor.getInt(1),
-                            cursor.getLong(2),
-                            cursor.getLong(3),
-                            cursor.getString(4),
-                            cursor.getString(5),
-                            cursor.getString(6),
-                            cursor.getInt(7),
-                            cursor.getString(8)
-                    )
-            );
-        }
-        cursor.close();
+        if (!selection.isEmpty()) {
+            Cursor cursor = meegosSQLHelper.getEventos(contactId, selection);
+            while (cursor.moveToNext()) {
+                eventos.add(
+                        new Evento(
+                                cursor.getLong(0),
+                                cursor.getInt(1),
+                                cursor.getLong(2),
+                                cursor.getLong(3),
+                                cursor.getString(4),
+                                cursor.getString(5),
+                                cursor.getString(6),
+                                cursor.getInt(7),
+                                cursor.getString(8)
+                        )
+                );
+            }
+            cursor.close();
 
 //        Agregamos las llamadas realizadas de ese usuario
-        if (MeegosPreferences.isHistoryCallFiltered(context))
-            eventos.addAll(findAllOutgoingCall(contactNombre));
+            if (MeegosPreferences.isHistoryCallFiltered(context))
+                eventos.addAll(findAllOutgoingCall(contactNombre));
 
 //        Agregamos los mensajes enviados por ese usuario
-        if (MeegosPreferences.isHistorySMSFiltered(context))
-            eventos.addAll(findAllSentSMS(contactId));
+            if (MeegosPreferences.isHistorySMSFiltered(context))
+                eventos.addAll(findAllSentSMS(contactId));
 
-        // Ordenamos el resultado
-        eventos.sort(new Comparator<Evento>() {
-            @Override
-            public int compare(Evento e1, Evento e2) {
-                if (MeegosPreferences.getHistoryOrder(context).equals("fecha ASC")) {
-                    return Long.compare(e2.getFecha(), e1.getFecha());
-                } else {
-                    return Long.compare(e1.getFecha(), e2.getFecha());
+            // Ordenamos el resultado
+            eventos.sort(new Comparator<Evento>() {
+                @Override
+                public int compare(Evento e1, Evento e2) {
+                    if (MeegosPreferences.getHistoryOrder(context).equals("fecha ASC")) {
+                        return Long.compare(e2.getFecha(), e1.getFecha());
+                    } else {
+                        return Long.compare(e1.getFecha(), e2.getFecha());
+                    }
                 }
-            }
-        });
-
+            });
+        }
         return eventos;
     }
 

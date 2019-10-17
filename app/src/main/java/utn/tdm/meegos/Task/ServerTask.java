@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
 
@@ -19,6 +20,7 @@ import java.util.Calendar;
 import utn.tdm.meegos.R;
 import utn.tdm.meegos.domain.Transaccion;
 import utn.tdm.meegos.manager.TransaccionManager;
+import utn.tdm.meegos.notifications.MeegosNotifications;
 import utn.tdm.meegos.util.Constants;
 import utn.tdm.meegos.util.CustomXMLParser;
 import utn.tdm.meegos.util.DateUtil;
@@ -61,6 +63,7 @@ public class ServerTask extends AsyncTask<XMLDataBlock, Void, XMLDataBlock> {
         transaccion.setTimestamp(DateUtil.getCalendarAsString(Calendar.getInstance(), Constants.CALENDAR_FORMAT_PATTERN));
 
         XMLDataBlock response = new XMLDataBlock("result", null, null);
+
         try {
             httpsURLConnection = (HttpURLConnection) url.openConnection();
             httpsURLConnection.setRequestMethod("POST");
@@ -99,10 +102,9 @@ public class ServerTask extends AsyncTask<XMLDataBlock, Void, XMLDataBlock> {
     @Override
     protected void onPostExecute(XMLDataBlock xmlDataBlock) {
         super.onPostExecute(xmlDataBlock);
-        registerRequest(xmlDataBlock);
+        int Rid=0;
 
         if (xmlDataBlock.getAttribute("type").equals("error")) {
-            int Rid;
             switch (Integer.parseInt(xmlDataBlock.getChildBlock("detail").getAttribute("code"))) {
                 case Constants.ERROR_MALFORMED_XML:
                     Rid = R.string.error_1;
@@ -164,13 +166,17 @@ public class ServerTask extends AsyncTask<XMLDataBlock, Void, XMLDataBlock> {
                 serverListener.toDoOnSuccessPostExecute(xmlDataBlock);
             }
         }
+        registerRequest(xmlDataBlock, Rid);
     }
 
-    private void registerRequest(XMLDataBlock xmlDataBlock) {
+    private void registerRequest(XMLDataBlock xmlDataBlock, int Rid) {
         String transactionType = xmlDataBlock.getAttribute("type");
         transaccion.setResponseType(transactionType);
         if (transactionType.equals("error")) {
             transaccion.setErrorCode(xmlDataBlock.getChildBlock("detail").getAttribute("code"));
+            if (transaccion.getRequestName().equals("send-message")) {
+                MeegosNotifications.messageResultNotification(context, false, Rid);
+            }
         }
         new TransaccionManager(context).saveTransaccion(transaccion);
     }

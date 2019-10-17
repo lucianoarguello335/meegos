@@ -84,6 +84,14 @@ public class ContactManager {
 
         if(cursor.getCount() > 0) {
             cursor.moveToFirst();
+
+            String alias = "";
+            Cursor c = meegosSQLHelper.getAliasByContactLookupKey(
+                    cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.LOOKUP_KEY)));
+            if (c.moveToFirst()) {
+                alias = c.getString(1);
+            }
+
             /*
              * Assuming the current Cursor position is the contact you want, gets the thumbnail ID
              */
@@ -93,7 +101,7 @@ public class ContactManager {
                     cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.LOOKUP_KEY)),
                     cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME)),
                     cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME_ALTERNATIVE)),
-                    "",
+                    alias,
                     (thumbnailUri != null ? loadContactPhotoThumbnail(thumbnailUri) : null)
             );
 
@@ -120,6 +128,14 @@ public class ContactManager {
             return null;
         } else {
             cursor.moveToFirst();
+
+            String alias = "";
+            Cursor c = meegosSQLHelper.getAliasByContactLookupKey(
+                    cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.LOOKUP_KEY)));
+            if (c.moveToFirst()) {
+                alias = c.getString(1);
+            }
+
             /*
              * Assuming the current Cursor position is the contact you want, gets the thumbnail ID
              */
@@ -129,7 +145,7 @@ public class ContactManager {
                     cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.LOOKUP_KEY)),
                     cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME)),
                     cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME_ALTERNATIVE)),
-                    "",
+                    alias,
                     (thumbnailUri != null ? loadContactPhotoThumbnail(thumbnailUri) : null)
             );
 
