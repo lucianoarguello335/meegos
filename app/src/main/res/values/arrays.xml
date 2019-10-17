@@ -17,10 +17,9 @@
     </string-array>
 
 <!--    chat list-->
-    <string-array name="chat_filter">
-        <item>All</item>
-        <item>Only received</item>
-        <item>Only sent</item>
+    <string-array name="chat_order">
+        <item>The old events above</item><!-- <item>Los ultimos eventos arriba.</item>-->
+        <item>The new events above</item>
     </string-array>
     
 </resources>

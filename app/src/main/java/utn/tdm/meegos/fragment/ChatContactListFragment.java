@@ -8,31 +8,19 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.snackbar.Snackbar;
 
 import utn.tdm.meegos.R;
 import utn.tdm.meegos.adapter.ChatContactListAdapter;
 import utn.tdm.meegos.domain.Chat;
-import utn.tdm.meegos.domain.Evento;
-import utn.tdm.meegos.listener.OnListEventListener;
+import utn.tdm.meegos.listener.ChatListener;
 import utn.tdm.meegos.manager.ChatManager;
 import utn.tdm.meegos.manager.ContactManager;
 
-/**
- * A fragment representing a list of Items.
- * <p/>
- * Activities containing this fragment MUST implement the {@link ChatFragmentInteractionListener}
- * interface.
- */
-public class ChatContactListFragment extends Fragment {
-
-    // TODO: Customize parameter argument names
-    private static final String ARG_COLUMN_COUNT = "column-count";
-    // TODO: Customize parameters
-    private int mColumnCount = 1;
-    private ChatFragmentInteractionListener mListener;
+public class ChatContactListFragment extends Fragment implements ChatListener {
 
     private ChatManager chatManager;
     private ContactManager contactManager;
@@ -53,72 +41,61 @@ public class ChatContactListFragment extends Fragment {
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
             final RecyclerView recyclerView = (RecyclerView) view;
-            if (mColumnCount <= 1) {
-                recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            } else {
-                recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
-            }
+            recyclerView.setLayoutManager(new LinearLayoutManager(context));
             chatManager = new ChatManager(getContext());
             contactManager = new ContactManager(getContext());
-            Bundle bundle = getActivity().getIntent().getExtras();
+            final Bundle bundle = getActivity().getIntent().getExtras();
 
             chatContactListAdapter = new ChatContactListAdapter(
                     contactManager.findContactByLookupKey(bundle.getString("lookupKey")),
                     chatManager.findChatsByAlias(bundle.getString("alias")),
-                    new ChatFragmentInteractionListener() {
-                        @Override
-                        public void onChatDelete(Chat chat) {
-//                            chatContactListAdapter.delete
-//                            int result = chatManager.deleteChat(chat);
-//                            Toast.makeText(
-//                                    getContext(),
-//                                    "Result: " + result,
-//                                    Toast.LENGTH_SHORT
-//                            ).show();
-//                            chatContactListAdapter.setChats(chatManager.findChatsByContact(
-//                                    chat.getContactoId(),
-//                                    chat.getContactoLookup(),
-//                                    chat.getContactoNombre()
-//                            ));
-//                            chatContactListAdapter.notifyDataSetChanged();
-                        }
-                    }
+                    this
             );
-
             recyclerView.setAdapter(chatContactListAdapter);
         }
         return view;
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof ChatFragmentInteractionListener) {
-            mListener = (ChatFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnListFragmentInteractionListener");
+    public void onResume() {
+        super.onResume();
+        Bundle bundle = getActivity().getIntent().getExtras();
+        if (bundle != null) {
+            chatContactListAdapter.setChats(
+                    chatManager.findChatsByAlias(bundle.getString("alias"))
+            );
+            chatContactListAdapter.notifyDataSetChanged();
+        }
+    }
+
+    public void onSentMessage(Chat chat) {
+        Bundle bundle = getActivity().getIntent().getExtras();
+        if (bundle != null) {
+            chatContactListAdapter.setChats(chatManager.findChatsByAlias(bundle.getString("alias")));
+            chatContactListAdapter.notifyDataSetChanged();
         }
     }
 
     @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
+    public void onChatDelete(Chat chat) {
+        if (chatManager.deleteChat(chat) > 0) {
+            Toast.makeText(getContext(), R.string.deleted_success, Toast.LENGTH_LONG).show();
+        }else{
+            Snackbar.make(getView(), R.string.deleted_failed, Snackbar.LENGTH_LONG).show();
+        }
+        Bundle bundle = getActivity().getIntent().getExtras();
+        if (bundle != null) {
+            chatContactListAdapter.setChats(chatManager.findChatsByAlias(bundle.getString("alias")));
+            chatContactListAdapter.notifyDataSetChanged();
+        }
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
+    @Override
+    public void onMessageSent(Chat chat) {
+    }
+
     public interface ChatFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onChatDelete(Chat chat);
+        void onSentMessage(Chat chat);
     }
 }
