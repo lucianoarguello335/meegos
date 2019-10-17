@@ -91,11 +91,6 @@ public class ContactActivity extends AppCompatActivity implements ContactListFra
         IntentFilter intentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
         getApplicationContext().registerReceiver(new NetworkStatusReceiver(), intentFilter);
 
-        // TODO: ELIMINAR
-        MeegosPreferences.setUsername(this, "ezeeze");
-        MeegosPreferences.setPassword(this, "123456");
-//        MeegosPreferences.setTimestamp(this, 0L);
-
 //        Corremos el servicio para obtener los mensajes web
         runMessageService();
     }

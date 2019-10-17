@@ -13,7 +13,7 @@
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
+            android:id="@+id/history_contact_toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
@@ -22,7 +22,7 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <fragment
-        android:id="@+id/hitory_contact_list_fragment"
+        android:id="@+id/history_contact_list_fragment"
         class="utn.tdm.meegos.fragment.HistoryContactListFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
