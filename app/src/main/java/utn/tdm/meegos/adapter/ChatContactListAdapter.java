@@ -14,6 +14,7 @@ import java.util.List;
 import utn.tdm.meegos.R;
 import utn.tdm.meegos.domain.Chat;
 import utn.tdm.meegos.domain.Contacto;
+import utn.tdm.meegos.fragment.ChatContactListFragment;
 import utn.tdm.meegos.listener.ChatListener;
 
 public class ChatContactListAdapter extends RecyclerView.Adapter<ChatContactListAdapter.ViewHolder> {
