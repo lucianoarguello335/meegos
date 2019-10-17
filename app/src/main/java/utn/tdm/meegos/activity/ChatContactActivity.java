@@ -1,5 +1,6 @@
 package utn.tdm.meegos.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -7,8 +8,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -17,6 +20,8 @@ import java.util.Calendar;
 
 import utn.tdm.meegos.R;
 import utn.tdm.meegos.domain.Chat;
+import utn.tdm.meegos.listener.ChatListener;
+import utn.tdm.meegos.listener.ListListener;
 import utn.tdm.meegos.manager.ChatManager;
 import utn.tdm.meegos.manager.ContactManager;
 import utn.tdm.meegos.notifications.MeegosNotifications;
@@ -31,6 +36,7 @@ public class ChatContactActivity extends AppCompatActivity {
 
     private ContactManager contactManager = new ContactManager(this);
     private ChatManager chatManager = new ChatManager(this);
+    private ListListener listListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,12 +77,7 @@ public class ChatContactActivity extends AppCompatActivity {
                         public void toDoOnSuccessPostExecute(XMLDataBlock responseXMLDataBlock) {
                             chatManager.saveChat(chat);
                             MeegosNotifications.messageResultNotification(view.getContext(), true, 0);
-
-//                            ChatContactListFragment chatContactListFragment = new ChatContactListFragment();
-//                            FragmentManager fm = getSupportFragmentManager();
-//                            FragmentTransaction ft = fm.beginTransaction();
-//                            ft.add(chatContactListFragment, null);
-//                            ft.commit();
+                            listListener.onListUpdate();
                         }
                     }).execute(requestBodyBlock);
 
@@ -109,5 +110,20 @@ public class ChatContactActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void onAttachFragment(@NonNull Fragment fragment) {
+        super.onAttachFragment(fragment);
+        if (fragment instanceof ListListener) {
+            listListener = (ListListener) fragment;
+        } else {
+            throw new RuntimeException(fragment.toString() + " must implement ListListener");
+        }
+    }
+
+    @Override
+    public void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
     }
 }
