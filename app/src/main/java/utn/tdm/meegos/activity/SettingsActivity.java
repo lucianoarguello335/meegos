@@ -30,7 +30,13 @@ public class SettingsActivity extends AppCompatActivity {
                         .beginTransaction()
                         .replace(R.id.settings, new SettingsHistoryFragment())
                         .commit();
-
+                    break;
+                case 3:
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.settings, new SettingsChatFragment())
+                            .commit();
+                    break;
             }
         }
         ActionBar actionBar = getSupportActionBar();
@@ -58,6 +64,13 @@ public class SettingsActivity extends AppCompatActivity {
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             setPreferencesFromResource(R.xml.history_contact_preferences, rootKey);
+        }
+    }
+
+    public static class SettingsChatFragment extends PreferenceFragmentCompat {
+        @Override
+        public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
+            setPreferencesFromResource(R.xml.chat_contact_preferences, rootKey);
         }
     }
 }
