@@ -141,7 +141,7 @@ public class XMLUtil
 //        action Block
         XMLDataBlock requestBodyBlock = new XMLDataBlock("action", null, null);
         requestBodyBlock.setAttribute("id", UUID.randomUUID().toString());
-        requestBodyBlock.setAttribute("name", "get-messages");
+        requestBodyBlock.setAttribute("name", "send-message");
 
 //        action-detail block
         XMLDataBlock actionDetailBlock = new XMLDataBlock("action-detail", requestBodyBlock, null);
@@ -152,7 +152,7 @@ public class XMLUtil
         authBlock.setAttribute("key", MeegosPreferences.getPassword(context));
 
 //        message block
-        XMLDataBlock messageBlock = new XMLDataBlock("filter", actionDetailBlock, null);
+        XMLDataBlock messageBlock = new XMLDataBlock("message", actionDetailBlock, null);
         messageBlock.setAttribute("to", toUsername);
         messageBlock.addText(getCDATA(message));
 
