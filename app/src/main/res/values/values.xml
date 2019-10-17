@@ -15,4 +15,9 @@
         <item>fecha ASC</item>
         <item>fecha DESC</item><!-- <item>Los ultimos eventos arriba.</item>-->
     </string-array>
+
+    <string-array name="chat_order_values">
+        <item>_id ASC</item>
+        <item>_id DESC</item><!-- <item>Los ultimos chats arriba.</item>-->
+    </string-array>
 </resources>
