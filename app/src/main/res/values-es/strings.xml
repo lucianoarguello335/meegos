@@ -65,6 +65,8 @@
     <string name="filter_call">Llamadas</string>
     <string name="filter_sms">SMS</string>
     <string name="filter_has_phone_number">Solo con numero telefonico</string>
+    <string name="filter_sent">Enviados</string>
+    <string name="filter_received">Recibidos</string>
 
     <!-- Notifications Strings -->
     <string name="notification_message_result_title_error">Error!</string>

@@ -64,7 +64,9 @@
     <!-- Key Preferences -->
     <string name="filter_call">Calls</string>
     <string name="filter_sms">SMS</string>
-    <string name="filter_has_phone_number">Only contacts with phone numbers</string>
+    <string name="filter_has_phone_number">Only with phone numbers</string>
+    <string name="filter_sent">Sent</string>
+    <string name="filter_received">Received</string>
 
     <!-- Notifications Strings -->
     <string name="notification_message_result_title_error">Error!</string>
