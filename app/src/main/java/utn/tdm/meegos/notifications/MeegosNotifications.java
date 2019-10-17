@@ -33,9 +33,7 @@ public class MeegosNotifications {
             NotificationManager.IMPORTANCE_DEFAULT
     );
 
-    public static void messageResultNotification(Context context, boolean isSuccesful){
-
-        //TODO: Obtener textos de "strings.xml"
+    public static void messageResultNotification(Context context, boolean isSuccesful, int rIdMessage){
 
         int smallIcon;
         Bitmap largeIcon;
@@ -48,7 +46,7 @@ public class MeegosNotifications {
             smallIcon = R.drawable.baseline_sms_failed_black_18;
             largeIcon = ((BitmapDrawable) context.getResources().getDrawable(R.drawable.baseline_sms_failed_black_36)).getBitmap();
             contentTitle = context.getResources().getString(R.string.notification_message_result_title_error);
-            contentText = context.getResources().getString(R.string.notification_message_result_text_error);
+            contentText = context.getResources().getString(rIdMessage);
             ticker = context.getResources().getString(R.string.notification_message_result_ticker_error);
         }
 
@@ -57,7 +55,7 @@ public class MeegosNotifications {
             smallIcon = R.drawable.baseline_done_black_18;
             largeIcon = ((BitmapDrawable) context.getResources().getDrawable(R.drawable.baseline_done_black_36)).getBitmap();
             contentTitle = context.getResources().getString(R.string.notification_message_result_title_success);
-            contentText = context.getResources().getString(R.string.notification_message_result_title_success);
+            contentText = context.getResources().getString(R.string.notification_message_result_text_success);
             ticker = context.getResources().getString(R.string.notification_message_result_title_success);
         }
 
