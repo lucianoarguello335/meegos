@@ -90,10 +90,12 @@ public class ChatContactListFragment extends Fragment implements ListListener {
             ArrayList<Chat> chats = chatManager.findChatsByAlias(bundle.getString("alias"));
             chatContactListAdapter.setChats(chats);
             chatContactListAdapter.notifyDataSetChanged();
-            if(MeegosPreferences.getChatOrder(recyclerView.getContext()).equals("_id ASC")) {
-                recyclerView.smoothScrollToPosition(chats.size()-1);
-            } else {
-                recyclerView.smoothScrollToPosition(0);
+            if(chats.size() > 0) {
+                if (MeegosPreferences.getChatOrder(recyclerView.getContext()).equals("_id ASC")) {
+                    recyclerView.smoothScrollToPosition(chats.size() - 1);
+                } else {
+                    recyclerView.smoothScrollToPosition(0);
+                }
             }
         }
 
