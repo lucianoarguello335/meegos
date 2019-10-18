@@ -1,0 +1,108 @@
+{
+	"info": {
+		"_postman_id": "61024c20-0a03-4bb2-bc34-3dd9b9cfb6a3",
+		"name": "TDM",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Registración de usuario",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/xml",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "<action id=\"REQUEST_RANDOM_VALUE\" name=\"register-user\">\r\n\t<action-detail>\r\n\t\t<user username=\"celu002\" password=\"123456\"/>\r\n\t</action-detail>\r\n</action>\r\n",
+					"options": {
+						"raw": {
+							"language": "xml"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{SERVER}}/MessageSender",
+					"host": [
+						"{{SERVER}}"
+					],
+					"path": [
+						"MessageSender"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Envío de mensaje",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/xml",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "<action id=\"REQUEST_RANDOM_VALUE\" name=\"send-message\">\r\n\t<action-detail>\r\n\t\t<auth username=\"celu002\" key=\"123456\"></auth>\r\n\t\t<message to=\"celu001\"><![CDATA[HolaPor que ???]]></message>\r\n\t</action-detail>\r\n</action>\r\n",
+					"options": {
+						"raw": {
+							"language": "xml"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{SERVER}}/MessageSender",
+					"host": [
+						"{{SERVER}}"
+					],
+					"path": [
+						"MessageSender"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Consulta de mensajes",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/xml",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "<action name=\"get-messages\" id=\"6c2476a0-774e-41f4-83e1-645c7f359c74\">\n\t<action-detail>\n\t\t<auth key=\"123456\" username=\"celu001\"></auth>\n\t\t<filter type=\"timestamp\">18/10/2019 00:29:03</filter>\n\t</action-detail>\n</action>\n",
+					"options": {
+						"raw": {
+							"language": "xml"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{SERVER}}/MessageSender",
+					"host": [
+						"{{SERVER}}"
+					],
+					"path": [
+						"MessageSender"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
