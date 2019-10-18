@@ -1,6 +1,5 @@
 package utn.tdm.meegos.activity;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -20,7 +19,6 @@ import java.util.Calendar;
 
 import utn.tdm.meegos.R;
 import utn.tdm.meegos.domain.Chat;
-import utn.tdm.meegos.listener.ChatListener;
 import utn.tdm.meegos.listener.ListListener;
 import utn.tdm.meegos.manager.ChatManager;
 import utn.tdm.meegos.manager.ContactManager;
