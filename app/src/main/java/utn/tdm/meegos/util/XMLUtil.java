@@ -111,7 +111,7 @@ public class XMLUtil
     public static XMLDataBlock getDataBlockGetMessages(Context context) {
 //        action Block
         XMLDataBlock requestBodyBlock = new XMLDataBlock("action", null, null);
-        requestBodyBlock.setAttribute("id", String.valueOf(Calendar.getInstance().getTimeInMillis()));
+        requestBodyBlock.setAttribute("id", UUID.randomUUID().toString());
         requestBodyBlock.setAttribute("name", "get-messages");
 
 //        action-detail block
@@ -126,10 +126,7 @@ public class XMLUtil
         XMLDataBlock filterBlock = new XMLDataBlock("filter", actionDetailBlock, null);
         filterBlock.setAttribute("type", "timestamp");
 
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(MeegosPreferences.getTimestamp(context));
-        String timestamp = DateUtil.getCalendarAsString(calendar, Constants.CALENDAR_FORMAT_PATTERN);
-        filterBlock.addText(timestamp);
+        filterBlock.addText(MeegosPreferences.getTimestamp(context));
 
         actionDetailBlock.addChild(authBlock);
         actionDetailBlock.addChild(filterBlock);

@@ -80,23 +80,13 @@ public class MeegosPreferences {
         editor.commit();
     }
 
-    /**
-     * Value to use in Calendar.getInstance().setTimeInMillis()
-     * @param context
-     * @return
-     */
-    public static Long getTimestamp(Context context) {
-        return getPrefs(context).getLong("chat_timestamp", 0);
+    public static String getTimestamp(Context context) {
+        return getPrefs(context).getString( "chat_timestamp", /* Fecha en que rendimos TDM */ "17/10/2019 18:00:00");
     }
 
-    /**
-     * Value of Calendar.getInstance().getTimeInMillis()
-     * @param context
-     * @param milliseconds time as UTC milliseconds from the epoch.
-     */
-    public static void setTimestamp(Context context, Long milliseconds) {
+    public static void setTimestamp(Context context, String timestamp) {
         SharedPreferences.Editor editor = getPrefs(context).edit();
-        editor.putLong("chat_timestamp", milliseconds);
+        editor.putString("chat_timestamp", timestamp);
         editor.commit();
     }
 }
